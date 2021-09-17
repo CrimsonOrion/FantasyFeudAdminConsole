@@ -1,0 +1,194 @@
+﻿<mah:MetroWindow x:Class="FantasyFeudAdminConsole.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:prism="http://prismlibrary.com/"
+    Title="{Binding Title}"
+    Dialog:DialogParticipation.Register="{Binding}"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="10" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="10" />
+        </Grid.RowDefinitions>
+
+        <!--  Row 1  -->
+        <TextBlock x:Name="GameIdLabel"
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="5"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Text="Game Id:" />
+
+        <TextBlock x:Name="GameIdText"
+            Grid.Row="1"
+            Grid.Column="2"
+            Margin="5"
+            VerticalAlignment="Center"
+            Text="{Binding GameId, FallbackValue=0}" />
+
+        <TextBlock x:Name="QuestionIdLabel"
+            Grid.Row="1"
+            Grid.Column="3"
+            Margin="5"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Text="Question Id:" />
+
+        <TextBlock x:Name="QuestionIdText"
+            Grid.Row="1"
+            Grid.Column="4"
+            Margin="5"
+            VerticalAlignment="Center"
+            Text="{Binding QuestionId, FallbackValue=0}" />
+
+        <Button x:Name="NextQuestionButton"
+            Grid.Row="1"
+            Grid.Column="5"
+            Margin="5"
+            VerticalAlignment="Center"
+            Command="{Binding NextQuestionCommand}"
+            Content="Next Question" />
+
+        <!--  Row 2  -->
+        <TextBlock x:Name="QuestionLabel"
+            Grid.Row="2"
+            Grid.Column="1"
+            Margin="5"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Text="Question:" />
+
+        <TextBlock x:Name="QuestionText"
+            Grid.Row="2"
+            Grid.Column="2"
+            Grid.ColumnSpan="5"
+            Margin="5"
+            VerticalAlignment="Center"
+            FontWeight="Bold"
+            Text="{Binding Question, FallbackValue=Show Question Here}" />
+
+        <!--  Row 3  -->
+        <StackPanel
+            Grid.Row="3"
+            Grid.Column="1"
+            Margin="0,13,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Orientation="Vertical">
+            <TextBlock
+                Margin="5"
+                HorizontalAlignment="Center"
+                Text="Strikes:" />
+            <TextBox x:Name="StrikesText"
+                HorizontalAlignment="Center"
+                Text="{Binding Strikes, FallbackValue=0, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+
+
+        <Button x:Name="ShowAnswer0Button"
+            Grid.Row="3"
+            Grid.Column="2"
+            Margin="5"
+            Command="{Binding ShowAnswer0Command}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock x:Name="Answer0"
+                    HorizontalAlignment="Center"
+                    Text="{Binding Answer0, FallbackValue=Answer0}" />
+                <TextBlock x:Name="Answer0Value"
+                    HorizontalAlignment="Center"
+                    Text="{Binding Answer0Value, FallbackValue=0}" />
+                <TextBlock x:Name="Answer0Visible"
+                    HorizontalAlignment="Center"
+                    Text="{Binding Answer0Visible, FallbackValue=0}" />
+            </StackPanel>
+        </Button>
+        <Button x:Name="ShowAnswer4"
+            Grid.Row="3"
+            Grid.Column="3"
+            Margin="5"
+            Command="{Binding ShowAnswer4Command}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock x:Name="Answer4"
+                    HorizontalAlignment="Center"
+                    Text="{Binding Answer4, FallbackValue=Answer4}" />
+                <TextBlock x:Name="Answer4Value"
+                    HorizontalAlignment="Center"
+                    Text="{Binding Answer4Value, FallbackValue=0}" />
+                <TextBlock x:Name="Answer4Visible"
+                    HorizontalAlignment="Center"
+                    Text="{Binding Answer4Visible, FallbackValue=0}" />
+            </StackPanel>
+        </Button>
+        <StackPanel
+            Grid.Row="3"
+            Grid.Column="4"
+            Orientation="Vertical">
+            <TextBox x:Name="Team1Name"
+                Margin="5"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="{Binding Team1Name, FallbackValue=Team 1 Name}" />
+            <TextBox x:Name="Team1Score"
+                Margin="5"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="{Binding Team1Score, FallbackValue=0}" />
+        </StackPanel>
+
+        <StackPanel
+            Grid.Row="3"
+            Grid.Column="5"
+            Orientation="Vertical">
+            <TextBox x:Name="Team2Name"
+                Margin="5"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="{Binding Team2Name, FallbackValue=Team 2 Name}" />
+            <TextBox x:Name="Team2Score"
+                Margin="5"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="{Binding Team2Score, FallbackValue=0}" />
+        </StackPanel>
+
+        <Button x:Name="AddTeam1MemberButton"
+            Grid.Row="3"
+            Grid.Column="6"
+            Margin="5"
+            Command="{Binding AddTeam1MemberCommand}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Text="{Binding Team1Name, FallbackValue=Team 1 Name}" />
+                <TextBlock HorizontalAlignment="Center" Text="Add Member"/>
+            </StackPanel>
+        </Button>
+
+    </Grid>
+</mah:MetroWindow>

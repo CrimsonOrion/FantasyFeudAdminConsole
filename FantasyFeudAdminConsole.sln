@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31702.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "FantasyFeudDB", "FantasyFeudDB\FantasyFeudDB.sqlproj", "{2E21073C-1425-4AE4-B80D-9740736DFEE4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{F3FCF9B7-0C0D-468F-92D1-3E2D0D83B55C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FantasyFeudAdminConsole.Core", "FantasyFeudAdminConsole.Core\FantasyFeudAdminConsole.Core.csproj", "{3EF3C665-5B73-4B1B-A000-25458692498E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{70587F17-2D41-45D1-B1F6-3E55AF970CD2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{79E6A71A-86B9-4C3A-969F-A6D1BAA5C8E9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{FD3EADD4-FB89-4003-BADB-3774EB4B75BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FantasyFeudAdminConsole", "FantasyFeudAdminConsole\FantasyFeudAdminConsole.csproj", "{1EF1B69F-128E-4DBA-9E55-8C3387B40DDA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2E21073C-1425-4AE4-B80D-9740736DFEE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E21073C-1425-4AE4-B80D-9740736DFEE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E21073C-1425-4AE4-B80D-9740736DFEE4}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{2E21073C-1425-4AE4-B80D-9740736DFEE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E21073C-1425-4AE4-B80D-9740736DFEE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E21073C-1425-4AE4-B80D-9740736DFEE4}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{3EF3C665-5B73-4B1B-A000-25458692498E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EF3C665-5B73-4B1B-A000-25458692498E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EF3C665-5B73-4B1B-A000-25458692498E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EF3C665-5B73-4B1B-A000-25458692498E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EF1B69F-128E-4DBA-9E55-8C3387B40DDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EF1B69F-128E-4DBA-9E55-8C3387B40DDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EF1B69F-128E-4DBA-9E55-8C3387B40DDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EF1B69F-128E-4DBA-9E55-8C3387B40DDA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2E21073C-1425-4AE4-B80D-9740736DFEE4} = {F3FCF9B7-0C0D-468F-92D1-3E2D0D83B55C}
+		{3EF3C665-5B73-4B1B-A000-25458692498E} = {70587F17-2D41-45D1-B1F6-3E55AF970CD2}
+		{1EF1B69F-128E-4DBA-9E55-8C3387B40DDA} = {FD3EADD4-FB89-4003-BADB-3774EB4B75BF}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F4DF446C-DED6-4601-8A66-4124A04DD6EE}
+	EndGlobalSection
+EndGlobal
