@@ -4,7 +4,8 @@ namespace FantasyFeudAdminConsole.Core.DataAccess
 {
     public static class MsSqlConnectionString
     {
-        public static string ConnectionString(string dataSource, string initialCatalog, string userId, string password, bool integratedSecurity = false)
+        public static string ConnectionString { get; private set; }
+        public static void SetConnectionString(string dataSource, string initialCatalog, string userId, string password, bool integratedSecurity = false)
         {
             SqlConnectionStringBuilder connectionString = new()
             {
@@ -14,7 +15,7 @@ namespace FantasyFeudAdminConsole.Core.DataAccess
                 Password = password,
                 IntegratedSecurity = integratedSecurity
             };
-            return connectionString.ToString();
+            ConnectionString = connectionString.ToString();
         }
     }
 }
