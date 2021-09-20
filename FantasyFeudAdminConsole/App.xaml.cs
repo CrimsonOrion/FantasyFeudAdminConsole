@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Prism.Ioc;
 using Prism.Modularity;
 
+using System;
 using System.Windows;
 
 namespace FantasyFeudAdminConsole
@@ -41,6 +42,12 @@ namespace FantasyFeudAdminConsole
                 UserId = configuration.GetSection("Database Settings").GetSection("User ID").Value,
                 Password = configuration.GetSection("Database Settings").GetSection("Password").Value,
                 PersistSecurityInfo = bool.TryParse(configuration.GetSection("Database Settings").GetSection("Persist Security Info").Value, out var b) && b
+            };
+
+            GlobalConfig.WebServerSettings = new()
+            {
+                EventServer = new Uri(configuration.GetSection("Web Server Settings").GetSection("Event Server").Value),
+                EventServerTest = new Uri(configuration.GetSection("Web Server Settings").GetSection("Event Server Test").Value)
             };
 
             MsSqlConnectionString.SetConnectionString(GlobalConfig.DatabaseSettings.DataSource, GlobalConfig.DatabaseSettings.InitialCatalog, GlobalConfig.DatabaseSettings.UserId, GlobalConfig.DatabaseSettings.Password, GlobalConfig.DatabaseSettings.PersistSecurityInfo);
