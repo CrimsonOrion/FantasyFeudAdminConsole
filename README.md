@@ -13,7 +13,7 @@ You will need to add an appSettings.json file. You can use this template:
     },
     "Web Server Settings": {
         "Event Server": "",
-        "Event Server Test": "http://localhost:3001/question"
+        "Event Server Test": "http://localhost:3001/[questionlink]"
     }
 }
 ```
