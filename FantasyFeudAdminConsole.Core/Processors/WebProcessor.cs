@@ -2,7 +2,9 @@
 using FantasyFeudAdminConsole.Core.Models;
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -18,7 +20,32 @@ namespace FantasyFeudAdminConsole.Core.Processors
 
         public WebProcessor() { }
 
-        public async Task PostEvent(QuestionModel questionModel)
+        public QuestionModel CreateEventMessage(GamesDataModel games, IEnumerable<TeamsDataModel> teams, IEnumerable<TeamMembersDataModel> teamMembers, QuestionsDataModel questions, IEnumerable<AnswersDataModel> answers)
+        {
+            QuestionModel message = new()
+            {
+                IsValid = true,
+                Team1Name = teams.FirstOrDefault(_ => _.Id == games.Team1Id).TeamName,
+                Team2Name = teams.FirstOrDefault(_ => _.Id == games.Team2Id).TeamName,
+                Team1Score = games.Team1Score,
+                Team2Score = games.Team2Score,
+                Team1Members = teamMembers.Where(_ => _.TeamId == games.Team1Id).Select(_ => new TeamMembersModel() { Name = _.Name, Active = _.Active }),
+                Team2Members = teamMembers.Where(_ => _.TeamId == games.Team2Id).Select(_ => new TeamMembersModel() { Name = _.Name, Active = _.Active }),
+                Question = questions.Question,
+                Responses = questions.Responses,
+                Strikes = questions.Strikes,
+                Answers = answers.Select(_ => new AnswerModel()
+                {
+                    Answer = _.Visible == 1 ? _.Answer : "",
+                    Value = _.Visible == 1 ? _.Value : 0,
+                    Visible = _.Visible
+                })
+            };
+
+            return message;
+        }
+
+        public async Task PostEventAsync(QuestionModel questionModel)
         {
             var res = "";
             try

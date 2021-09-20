@@ -38,35 +38,58 @@
         </Grid.RowDefinitions>
 
         <!--  Row 1  -->
-        <TextBlock x:Name="GameIdLabel"
+        <StackPanel
             Grid.Row="1"
             Grid.Column="1"
-            Margin="5"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Center"
-            Text="Game Id:" />
+            Orientation="Horizontal">
+            <TextBlock x:Name="GameIdLabel"
+                Margin="5"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Text="Game Id:" />
 
-        <TextBlock x:Name="GameIdText"
+            <TextBox x:Name="GameIdText"
+                Margin="5"
+                VerticalAlignment="Center"
+                Text="{Binding GameData.Id, FallbackValue=0, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+
+        <StackPanel
             Grid.Row="1"
             Grid.Column="2"
-            Margin="5"
-            VerticalAlignment="Center"
-            Text="{Binding GameId, FallbackValue=0}" />
+            Orientation="Horizontal">
+            <TextBlock x:Name="QuestionIdLabel"
+                Margin="5"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Text="Question Id:" />
 
-        <TextBlock x:Name="QuestionIdLabel"
+            <TextBlock x:Name="QuestionIdText"
+                Margin="5"
+                VerticalAlignment="Center"
+                Text="{Binding QuestionData.Id, FallbackValue=0, UpdateSourceTrigger=Default}" />
+        </StackPanel>
+
+        <StackPanel
             Grid.Row="1"
             Grid.Column="3"
-            Margin="5"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Center"
-            Text="Question Id:" />
+            Orientation="Horizontal">
+            <TextBlock
+                Margin="5"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Text="Strikes:" />
+            <TextBox x:Name="StrikesText"
+                VerticalAlignment="Center"
+                Text="{Binding Question.Strikes, FallbackValue=0, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
 
-        <TextBlock x:Name="QuestionIdText"
+        <Button x:Name="AddStrikeButton"
             Grid.Row="1"
             Grid.Column="4"
             Margin="5"
-            VerticalAlignment="Center"
-            Text="{Binding QuestionId, FallbackValue=0}" />
+            Command="{Binding AddStrikeCommand}"
+            Content="Add Strike [X]" />
 
         <Button x:Name="NextQuestionButton"
             Grid.Row="1"
@@ -75,6 +98,13 @@
             VerticalAlignment="Center"
             Command="{Binding NextQuestionCommand}"
             Content="Next Question" />
+
+        <Button x:Name="GetDataButton"
+            Grid.Row="1"
+            Grid.Column="7"
+            Margin="5"
+            Command="{Binding GetDataCommand}"
+            Content="Get Data" />
 
         <!--  Row 2  -->
         <TextBlock x:Name="QuestionLabel"
@@ -92,30 +122,22 @@
             Margin="5"
             VerticalAlignment="Center"
             FontWeight="Bold"
-            Text="{Binding Question, FallbackValue=Show Question Here}" />
+            Text="{Binding Question.Question, FallbackValue=Show Question Here}" />
 
         <!--  Row 3  -->
-        <StackPanel
+        <Button x:Name="ProcessChangesButton"
             Grid.Row="3"
             Grid.Column="1"
-            Margin="0,13,0,0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Top"
-            Orientation="Vertical">
-            <TextBlock
-                Margin="5"
-                HorizontalAlignment="Center"
-                Text="Strikes:" />
-            <TextBox x:Name="StrikesText"
-                HorizontalAlignment="Center"
-                Text="{Binding Strikes, FallbackValue=0, UpdateSourceTrigger=PropertyChanged}" />
-        </StackPanel>
+            Margin="5"
+            Command="{Binding ProcessChangesCommand}"
+            Content="Process changes" />
 
         <Button x:Name="ShowAnswer0Button"
             Grid.Row="3"
             Grid.Column="2"
             Margin="5"
-            Command="{Binding ShowAnswer0Command}">
+            Command="{Binding ShowAnswerCommand}"
+            CommandParameter="0">
             <StackPanel Orientation="Vertical">
                 <TextBlock x:Name="Answer0"
                     HorizontalAlignment="Center"
@@ -128,12 +150,13 @@
                     Text="{Binding Answer0Visible, FallbackValue=0}" />
             </StackPanel>
         </Button>
-        
+
         <Button x:Name="ShowAnswer4Button"
             Grid.Row="3"
             Grid.Column="3"
             Margin="5"
-            Command="{Binding ShowAnswer4Command}">
+            Command="{Binding ShowAnswerCommand}"
+            CommandParameter="4">
             <StackPanel Orientation="Vertical">
                 <TextBlock x:Name="Answer4"
                     HorizontalAlignment="Center"
@@ -146,7 +169,7 @@
                     Text="{Binding Answer4Visible, FallbackValue=0}" />
             </StackPanel>
         </Button>
-        
+
         <StackPanel
             Grid.Row="3"
             Grid.Column="4"
@@ -188,7 +211,9 @@
                 <TextBlock
                     HorizontalAlignment="Center"
                     Text="{Binding Team1Name, FallbackValue=Team 1 Name}" />
-                <TextBlock HorizontalAlignment="Center" Text="Add Member"/>
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Text="Add Member" />
             </StackPanel>
         </Button>
 
@@ -201,23 +226,26 @@
                 <TextBlock
                     HorizontalAlignment="Center"
                     Text="{Binding Team2Name, FallbackValue=Team 2 Name}" />
-                <TextBlock HorizontalAlignment="Center" Text="Add Member"/>
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Text="Add Member" />
             </StackPanel>
         </Button>
 
-        <!-- Row 4 -->
-        <Button x:Name="AddStrikeButton" 
-                Grid.Row="4" 
-                Grid.Column="1" 
-                Margin="5" 
-                Command="{Binding AddStrikeCommand}"
-                Content="Add Strike [X]" />
+        <!--  Row 4  -->
+        <Button x:Name="PostEventButton"
+            Grid.Row="4"
+            Grid.Column="1"
+            Margin="5"
+            Command="{Binding PostEventCommand}"
+            Content="Post Event" />
 
         <Button x:Name="ShowAnswer1Button"
             Grid.Row="4"
             Grid.Column="2"
             Margin="5"
-            Command="{Binding ShowAnswer1Command}">
+            Command="{Binding ShowAnswerCommand}"
+            CommandParameter="1">
             <StackPanel Orientation="Vertical">
                 <TextBlock x:Name="Answer1"
                     HorizontalAlignment="Center"
@@ -230,12 +258,13 @@
                     Text="{Binding Answer1Visible, FallbackValue=0}" />
             </StackPanel>
         </Button>
-        
+
         <Button x:Name="ShowAnswer5Button"
             Grid.Row="4"
             Grid.Column="3"
             Margin="5"
-            Command="{Binding ShowAnswer5Command}">
+            Command="{Binding ShowAnswerCommand}"
+            CommandParameter="5">
             <StackPanel Orientation="Vertical">
                 <TextBlock x:Name="Answer5"
                     HorizontalAlignment="Center"
@@ -249,25 +278,25 @@
             </StackPanel>
         </Button>
 
-        <ListBox x:Name="Team1MembersList" 
-                 Grid.Row="4" 
-                 Grid.Column="4" 
-                 Grid.RowSpan="2" 
-                 Margin="5"                  
-                 ItemsSource="{Binding Team1Members}"
-                 DisplayMemberPath="Name" 
-                 SelectedItem="{Binding SelectedTeam1Members}" 
-                 ScrollViewer.HorizontalScrollBarVisibility="Auto" />
-        
-        <ListBox x:Name="Team2MembersList" 
-                 Grid.Row="4" 
-                 Grid.Column="5" 
-                 Grid.RowSpan="2" 
-                 Margin="5" 
-                 ItemsSource="{Binding Team2Members}"
-                 DisplayMemberPath="Name" 
-                 SelectedItem="{Binding SelectedTeam2Members}" 
-                 ScrollViewer.HorizontalScrollBarVisibility="Auto" />
+        <ListBox x:Name="Team1MembersList"
+            Grid.Row="4"
+            Grid.RowSpan="2"
+            Grid.Column="4"
+            Margin="5"
+            DisplayMemberPath="Name"
+            ItemsSource="{Binding Team1Members}"
+            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+            SelectedItem="{Binding SelectedTeam1Members}" />
+
+        <ListBox x:Name="Team2MembersList"
+            Grid.Row="4"
+            Grid.RowSpan="2"
+            Grid.Column="5"
+            Margin="5"
+            DisplayMemberPath="Name"
+            ItemsSource="{Binding Team2Members}"
+            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+            SelectedItem="{Binding SelectedTeam2Members}" />
 
         <Button x:Name="RemoveTeam1MemberButton"
             Grid.Row="4"
@@ -278,7 +307,9 @@
                 <TextBlock
                     HorizontalAlignment="Center"
                     Text="{Binding Team1Name, FallbackValue=Team 1 Name}" />
-                <TextBlock HorizontalAlignment="Center" Text="Remove Member"/>
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Text="Remove Member" />
             </StackPanel>
         </Button>
 
@@ -291,23 +322,19 @@
                 <TextBlock
                     HorizontalAlignment="Center"
                     Text="{Binding Team2Name, FallbackValue=Team 2 Name}" />
-                <TextBlock HorizontalAlignment="Center" Text="Remove Member"/>
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Text="Remove Member" />
             </StackPanel>
         </Button>
 
-        <!-- Row 5 -->
-        <Button x:Name="GetDataButton"
-                Grid.Row="5"
-                Grid.Column="1"
-                Margin="5"
-                Command="{Binding GetDataCommand}"
-                Content="Get Data" />
-
+        <!--  Row 5  -->
         <Button x:Name="ShowAnswer2Button"
             Grid.Row="5"
             Grid.Column="2"
             Margin="5"
-            Command="{Binding ShowAnswer2Command}">
+            Command="{Binding ShowAnswerCommand}"
+            CommandParameter="2">
             <StackPanel Orientation="Vertical">
                 <TextBlock x:Name="Answer2"
                     HorizontalAlignment="Center"
@@ -320,12 +347,13 @@
                     Text="{Binding Answer2Visible, FallbackValue=0}" />
             </StackPanel>
         </Button>
-        
+
         <Button x:Name="ShowAnswer6Button"
             Grid.Row="5"
             Grid.Column="3"
             Margin="5"
-            Command="{Binding ShowAnswer6Command}">
+            Command="{Binding ShowAnswerCommand}"
+            CommandParameter="6">
             <StackPanel Orientation="Vertical">
                 <TextBlock x:Name="Answer6"
                     HorizontalAlignment="Center"
@@ -338,20 +366,14 @@
                     Text="{Binding Answer6Visible, FallbackValue=0}" />
             </StackPanel>
         </Button>
-        
-        <!-- Row 6 -->
-        <Button x:Name="PostEventButton"
-                Grid.Row="6"
-                Grid.Column="1"
-                Margin="5"
-                Command="{Binding PostEventCommand}"
-                Content="Post Event" />
-        
+
+        <!--  Row 6  -->
         <Button x:Name="ShowAnswer3Button"
             Grid.Row="6"
             Grid.Column="2"
             Margin="5"
-            Command="{Binding ShowAnswer3Command}">
+            Command="{Binding ShowAnswerCommand}"
+            CommandParameter="3">
             <StackPanel Orientation="Vertical">
                 <TextBlock x:Name="Answer3"
                     HorizontalAlignment="Center"
@@ -369,7 +391,8 @@
             Grid.Row="6"
             Grid.Column="3"
             Margin="5"
-            Command="{Binding ShowAnswer7Command}">
+            Command="{Binding ShowAnswerCommand}"
+            CommandParameter="7">
             <StackPanel Orientation="Vertical">
                 <TextBlock x:Name="Answer7"
                     HorizontalAlignment="Center"
@@ -392,7 +415,9 @@
                 <TextBlock
                     HorizontalAlignment="Center"
                     Text="{Binding Team1Name, FallbackValue=Team 1 Name}" />
-                <TextBlock HorizontalAlignment="Center" Text="Award Team"/>
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Text="Award Team" />
             </StackPanel>
         </Button>
 
@@ -405,17 +430,14 @@
                 <TextBlock
                     HorizontalAlignment="Center"
                     Text="{Binding Team2Name, FallbackValue=Team 2 Name}" />
-                <TextBlock HorizontalAlignment="Center" Text="Award Team"/>
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Text="Award Team" />
             </StackPanel>
         </Button>
 
-        <!-- Row 7 -->
-        <Button x:Name="ProcessChangesButton"
-                Grid.Row="7"
-                Grid.Column="1"
-                Margin="5" 
-                Command="{Binding ProcessChangesCommand}"
-                Content="Process changes" />
+        <!--  Row 7  -->
+
 
     </Grid>
 </mah:MetroWindow>

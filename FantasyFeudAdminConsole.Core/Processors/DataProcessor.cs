@@ -66,14 +66,14 @@ namespace FantasyFeudAdminConsole.Core.Processors
             return output;
         }
 
-        public async Task<AnswersDataModel> GetAnswersDataAsync(int questionId)
+        public async Task<IEnumerable<AnswersDataModel>> GetAnswersDataAsync(int questionId)
         {
             Dictionary<string, object> param = new()
             {
                 { "@QuestionId", questionId }
             };
             IEnumerable<AnswersDataModel> output = await _sqlDataAccess.GetDataAsync<AnswersDataModel, Dictionary<string, object>>("spAnswers_GetByQuestionId", MsSqlConnectionString.ConnectionString, param, true);
-            return output.FirstOrDefault();
+            return output;
         }
 
         public async Task<int> ShowAnswerAsync(AnswersDataModel answer)
@@ -135,6 +135,43 @@ namespace FantasyFeudAdminConsole.Core.Processors
             };
 
             var result = await _sqlDataAccess.DeleteDataAsync("spTeamMembers_RemoveById", MsSqlConnectionString.ConnectionString, param, true);
+            return result;
+        }
+
+        public async Task<int> AddStrikeAsync(QuestionsDataModel model)
+        {
+            Dictionary<string, object> param = new()
+            {
+                { "@Id", model.Id },
+                { "@Strikes", model.Strikes }
+            };
+
+            var result = await _sqlDataAccess.PutDataAsync("spQuestions_UpdateStrikesById", MsSqlConnectionString.ConnectionString, param, true);
+            return result;
+        }
+
+        public async Task<int> ChangeTeamNamesAsync(TeamsDataModel model)
+        {
+            Dictionary<string, object> param = new()
+            {
+                { "@Id", model.Id },
+                { "@TeamName", model.TeamName }
+            };
+
+            var result = await _sqlDataAccess.PutDataAsync("spTeams_UpdateTeamNameById", MsSqlConnectionString.ConnectionString, param, true);
+            return result;
+        }
+
+        public async Task<int> ChangeTeamScoreAsync(GamesDataModel model)
+        {
+            Dictionary<string, object> param = new()
+            {
+                { "@Id", model.Id },
+                { "@Team1Score", model.Team1Score },
+                { "@Team2Score", model.Team2Score }
+            };
+
+            var result = await _sqlDataAccess.PutDataAsync("spGames_UpdateScoresById", MsSqlConnectionString.ConnectionString, param, true);
             return result;
         }
     }

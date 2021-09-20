@@ -79,5 +79,8 @@
     <Build Include="dbo\Stored Procedures\spTeamMembers_UpdateActiveById.sql" />
     <Build Include="dbo\Stored Procedures\spTeamMembers_Add.sql" />
     <Build Include="dbo\Stored Procedures\spTeamMembers_RemoveById.sql" />
+    <Build Include="dbo\Stored Procedures\spQuestions_UpdateStrikesById.sql" />
+    <Build Include="dbo\Stored Procedures\spTeams_UpdateTeamNameById.sql" />
+    <Build Include="dbo\Stored Procedures\spGames_UpdateScoresById.sql" />
   </ItemGroup>
 </Project>

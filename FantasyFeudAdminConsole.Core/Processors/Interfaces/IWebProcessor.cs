@@ -1,11 +1,13 @@
 ﻿using FantasyFeudAdminConsole.Core.Models;
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FantasyFeudAdminConsole.Core.Processors
 {
     public interface IWebProcessor
     {
-        Task PostEvent(QuestionModel questionModel);
+        QuestionModel CreateEventMessage(GamesDataModel games, IEnumerable<TeamsDataModel> teams, IEnumerable<TeamMembersDataModel> teamMembers, QuestionsDataModel questions, IEnumerable<AnswersDataModel> answers);
+        Task PostEventAsync(QuestionModel questionModel);
     }
 }
