@@ -22,52 +22,61 @@ namespace FantasyFeudAdminConsole.Core.Processors
             {
                 { "@Id", gameId }
             };
-            IEnumerable<GamesDataModel> output = await _sqlDataAccess.GetDataAsync<GamesDataModel, Dictionary<string, object>>("spGameData_GetById", MsSqlConnectionString.ConnectionString, param, true);
+            IEnumerable<GamesDataModel> output = await _sqlDataAccess.GetDataAsync<GamesDataModel, Dictionary<string, object>>("spGames_GetById", MsSqlConnectionString.ConnectionString, param, true);
             return output.FirstOrDefault();
         }
 
-        public async Task<TeamsDataModel> GetTeamDataAsync(int gameId)
+        public async Task<TeamsDataModel> GetTeamDataAsync(int teamId)
+        {
+            Dictionary<string, object> param = new()
+            {
+                { "@Id", teamId }
+            };
+            IEnumerable<TeamsDataModel> output = await _sqlDataAccess.GetDataAsync<TeamsDataModel, Dictionary<string, object>>("spTeams_GetById", MsSqlConnectionString.ConnectionString, param, true);
+            return output.FirstOrDefault();
+        }
+
+        public async Task<IEnumerable<TeamMembersDataModel>> GetTeamMembersDataAsync(int teamId)
+        {
+            Dictionary<string, object> param = new()
+            {
+                { "@TeamId", teamId }
+            };
+            IEnumerable<TeamMembersDataModel> output = await _sqlDataAccess.GetDataAsync<TeamMembersDataModel, Dictionary<string, object>>("spTeamMembers_GetByTeamId", MsSqlConnectionString.ConnectionString, param, true);
+            return output;
+        }
+
+        public async Task<TeamMembersDataModel> GetTeamMemberDataAsync(int teamMemberId)
+        {
+            Dictionary<string, object> param = new()
+            {
+                { "@Id", teamMemberId }
+            };
+            IEnumerable<TeamMembersDataModel> output = await _sqlDataAccess.GetDataAsync<TeamMembersDataModel, Dictionary<string, object>>("spTeamMembers_GetById", MsSqlConnectionString.ConnectionString, param, true);
+            return output.FirstOrDefault();
+        }
+
+        public async Task<IEnumerable<QuestionsDataModel>> GetQuestionsDataAsync(int gameId)
         {
             Dictionary<string, object> param = new()
             {
                 { "@GameId", gameId }
             };
-            IEnumerable<TeamsDataModel> output = await _sqlDataAccess.GetDataAsync<TeamsDataModel, Dictionary<string, object>>("spTeamData_GetByGameId", MsSqlConnectionString.ConnectionString, param, true);
-            return output.FirstOrDefault();
+            IEnumerable<QuestionsDataModel> output = await _sqlDataAccess.GetDataAsync<QuestionsDataModel, Dictionary<string, object>>("spQuestion_GetByGameId", MsSqlConnectionString.ConnectionString, param, true);
+            return output;
         }
 
-        public async Task<TeamMembersDataModel> GetTeamMembersDataAsync(int gameId)
-        {
-            Dictionary<string, object> param = new()
-            {
-                { "@GameId", gameId }
-            };
-            IEnumerable<TeamMembersDataModel> output = await _sqlDataAccess.GetDataAsync<TeamMembersDataModel, Dictionary<string, object>>("spTeamMembers_GetByGameId", MsSqlConnectionString.ConnectionString, param, true);
-            return output.FirstOrDefault();
-        }
-
-        public async Task<QuestionsDataModel> GetQuestionDataAsync(int gameId, int questionId)
-        {
-            Dictionary<string, object> param = new()
-            {
-                { "@GameId", gameId },
-                { "@QuestionId", questionId }
-            };
-            IEnumerable<QuestionsDataModel> output = await _sqlDataAccess.GetDataAsync<QuestionsDataModel, Dictionary<string, object>>("spQuestion_GetByGameIdAndQuestionId", MsSqlConnectionString.ConnectionString, param, true);
-            return output.FirstOrDefault();
-        }
-
-        public async Task<AnswerDataModel> GetAnswerDataAsync(int questionId)
+        public async Task<AnswersDataModel> GetAnswersDataAsync(int questionId)
         {
             Dictionary<string, object> param = new()
             {
                 { "@QuestionId", questionId }
             };
-            IEnumerable<AnswerDataModel> output = await _sqlDataAccess.GetDataAsync<AnswerDataModel, Dictionary<string, object>>("spAnswers_GetByQuestionId", MsSqlConnectionString.ConnectionString, param, true);
+            IEnumerable<AnswersDataModel> output = await _sqlDataAccess.GetDataAsync<AnswersDataModel, Dictionary<string, object>>("spAnswers_GetByQuestionId", MsSqlConnectionString.ConnectionString, param, true);
             return output.FirstOrDefault();
         }
 
-        public async Task<int> ShowAnswerAsync(AnswerDataModel answer)
+        public async Task<int> ShowAnswerAsync(AnswersDataModel answer)
         {
             answer.Visible = answer.Visible == 1 ? 0 : 1;
             Dictionary<string, object> param = new()
@@ -75,29 +84,20 @@ namespace FantasyFeudAdminConsole.Core.Processors
                 { "@Id", answer.Id },
                 { "@Visible", answer.Visible }
             };
-            var result = await _sqlDataAccess.PutDataAsync("spAnswers_UpdateById", MsSqlConnectionString.ConnectionString, param, true);
+            var result = await _sqlDataAccess.PutDataAsync("spAnswers_UpdateVisibleById", MsSqlConnectionString.ConnectionString, param, true);
             return result;
         }
 
         public async Task<int> AwardPointsAsync(int gameId, int teamNumber, int newScore)
         {
-            string storedProcedure;
-            if (teamNumber == 1)
-            {
-                storedProcedure = "spGames_UpdateTeam1ScoreByGameId";
-            }
-            else
-            {
-                storedProcedure = "spGames_UpdateTeam2ScoreByGameId";
-            }
-
             Dictionary<string, object> param = new()
             {
-                { "@GameId", gameId },
+                { "@Id", gameId },
+                { "@TeamNumber", teamNumber },
                 { "@Score", newScore }
             };
 
-            var result = await _sqlDataAccess.PutDataAsync(storedProcedure, MsSqlConnectionString.ConnectionString, param, true);
+            var result = await _sqlDataAccess.PutDataAsync("spGames_UpdateTeamScoreById", MsSqlConnectionString.ConnectionString, param, true);
             return result;
         }
 
@@ -134,7 +134,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
                 { "@Id", teamMemberId }
             };
 
-            var result = await _sqlDataAccess.PutDataAsync("spTeamMembers_RemoveById", MsSqlConnectionString.ConnectionString, param, true);
+            var result = await _sqlDataAccess.DeleteDataAsync("spTeamMembers_RemoveById", MsSqlConnectionString.ConnectionString, param, true);
             return result;
         }
     }

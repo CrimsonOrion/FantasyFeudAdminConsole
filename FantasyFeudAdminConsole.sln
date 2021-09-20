@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31710.8
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{F3FCF9B7-0C0D-468F-92D1-3E2D0D83B55C}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{FD3EADD4-FB89-4003-BADB-3774EB4B75BF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasyFeudAdminConsole", "FantasyFeudAdminConsole\FantasyFeudAdminConsole.csproj", "{1EF1B69F-128E-4DBA-9E55-8C3387B40DDA}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "FantasyFeud.DB", "FantasyFeud.DB\FantasyFeud.DB.sqlproj", "{A4C3FDF5-2790-44D7-A8D7-6A1E7987AB75}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,12 @@ Global
 		{1EF1B69F-128E-4DBA-9E55-8C3387B40DDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EF1B69F-128E-4DBA-9E55-8C3387B40DDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EF1B69F-128E-4DBA-9E55-8C3387B40DDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4C3FDF5-2790-44D7-A8D7-6A1E7987AB75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4C3FDF5-2790-44D7-A8D7-6A1E7987AB75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4C3FDF5-2790-44D7-A8D7-6A1E7987AB75}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{A4C3FDF5-2790-44D7-A8D7-6A1E7987AB75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4C3FDF5-2790-44D7-A8D7-6A1E7987AB75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4C3FDF5-2790-44D7-A8D7-6A1E7987AB75}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -36,6 +44,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{3EF3C665-5B73-4B1B-A000-25458692498E} = {70587F17-2D41-45D1-B1F6-3E55AF970CD2}
 		{1EF1B69F-128E-4DBA-9E55-8C3387B40DDA} = {FD3EADD4-FB89-4003-BADB-3774EB4B75BF}
+		{A4C3FDF5-2790-44D7-A8D7-6A1E7987AB75} = {F3FCF9B7-0C0D-468F-92D1-3E2D0D83B55C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F4DF446C-DED6-4601-8A66-4124A04DD6EE}

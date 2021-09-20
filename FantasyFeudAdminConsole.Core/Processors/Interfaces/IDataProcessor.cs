@@ -1,5 +1,6 @@
 ﻿using FantasyFeudAdminConsole.Core.Models;
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FantasyFeudAdminConsole.Core.Processors
@@ -9,12 +10,13 @@ namespace FantasyFeudAdminConsole.Core.Processors
         Task<int> AddTeamMemberAsync(TeamMembersDataModel model);
         Task<int> AwardPointsAsync(int gameId, int teamNumber, int newScore);
         Task<int> ChangeActiveMemberAsync(int inactiveMemberId, int activeMemberId);
-        Task<AnswerDataModel> GetAnswerDataAsync(int questionId);
+        Task<AnswersDataModel> GetAnswersDataAsync(int questionId);
         Task<GamesDataModel> GetGameDataAsync(int gameId);
-        Task<QuestionsDataModel> GetQuestionDataAsync(int gameId, int questionId);
+        Task<IEnumerable<QuestionsDataModel>> GetQuestionsDataAsync(int gameId);
         Task<TeamsDataModel> GetTeamDataAsync(int gameId);
-        Task<TeamMembersDataModel> GetTeamMembersDataAsync(int gameId);
+        Task<TeamMembersDataModel> GetTeamMemberDataAsync(int teamMemberId);
+        Task<IEnumerable<TeamMembersDataModel>> GetTeamMembersDataAsync(int gameId);
         Task<int> RemoveTeamMemberAsync(int teamMemberId);
-        Task<int> ShowAnswerAsync(AnswerDataModel answer);
+        Task<int> ShowAnswerAsync(AnswersDataModel answer);
     }
 }

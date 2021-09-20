@@ -1,6 +1,6 @@
 ﻿namespace FantasyFeudAdminConsole.Core.Models
 {
-    public class AnswerDataModel
+    public class AnswersDataModel
     {
         public int Id { get; set; }
         public int QuestionId { get; set; }
