@@ -9,7 +9,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
 {
     public class DataProcessor : IDataProcessor
     {
-        private ISqlDataAccess _sqlDataAccess;
+        private readonly ISqlDataAccess _sqlDataAccess;
 
         public DataProcessor(ISqlDataAccess sqlDataAccess)
         {
@@ -53,7 +53,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
                 { "@GameId", gameId },
                 { "@QuestionId", questionId }
             };
-            var output = await _sqlDataAccess.GetDataAsync<QuestionsDataModel, Dictionary<string, object>>("spQuestion_GetByGameIdAndQuestionId", MsSqlConnectionString.ConnectionString, param, true);
+            IEnumerable<QuestionsDataModel> output = await _sqlDataAccess.GetDataAsync<QuestionsDataModel, Dictionary<string, object>>("spQuestion_GetByGameIdAndQuestionId", MsSqlConnectionString.ConnectionString, param, true);
             return output.FirstOrDefault();
         }
 
@@ -63,7 +63,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
             {
                 { "@QuestionId", questionId }
             };
-            var output = await _sqlDataAccess.GetDataAsync<AnswerDataModel, Dictionary<string, object>>("spAnswers_GetByQuestionId", MsSqlConnectionString.ConnectionString, param, true);
+            IEnumerable<AnswerDataModel> output = await _sqlDataAccess.GetDataAsync<AnswerDataModel, Dictionary<string, object>>("spAnswers_GetByQuestionId", MsSqlConnectionString.ConnectionString, param, true);
             return output.FirstOrDefault();
         }
 
@@ -75,10 +75,67 @@ namespace FantasyFeudAdminConsole.Core.Processors
                 { "@Id", answer.Id },
                 { "@Visible", answer.Visible }
             };
-            var result = await _sqlDataAccess.PostDataAsync("spAnswers_UpdateById", MsSqlConnectionString.ConnectionString, param, true);
+            var result = await _sqlDataAccess.PutDataAsync("spAnswers_UpdateById", MsSqlConnectionString.ConnectionString, param, true);
             return result;
         }
 
-        public async Task<int> AwardPointsAsync()
+        public async Task<int> AwardPointsAsync(int gameId, int teamNumber, int newScore)
+        {
+            string storedProcedure;
+            if (teamNumber == 1)
+            {
+                storedProcedure = "spGames_UpdateTeam1ScoreByGameId";
+            }
+            else
+            {
+                storedProcedure = "spGames_UpdateTeam2ScoreByGameId";
+            }
+
+            Dictionary<string, object> param = new()
+            {
+                { "@GameId", gameId },
+                { "@Score", newScore }
+            };
+
+            var result = await _sqlDataAccess.PutDataAsync(storedProcedure, MsSqlConnectionString.ConnectionString, param, true);
+            return result;
+        }
+
+        public async Task<int> ChangeActiveMemberAsync(int inactiveMemberId, int activeMemberId)
+        {
+            Dictionary<string, object> param = new()
+            {
+                { "@ActiveId", activeMemberId },
+                { "@InactiveId", inactiveMemberId }
+            };
+
+            var result = await _sqlDataAccess.PutDataAsync("spTeamMembers_UpdateActiveById", MsSqlConnectionString.ConnectionString, param, true);
+            return result;
+        }
+
+        public async Task<int> AddTeamMemberAsync(TeamMembersDataModel model)
+        {
+            Dictionary<string, object> param = new()
+            {
+                { "@Id", model.Id },
+                { "@TeamId", model.TeamId },
+                { "@Name", model.Name },
+                { "@Active", model.Active }
+            };
+
+            var result = await _sqlDataAccess.PostDataAsync("spTeamMembers_Add", MsSqlConnectionString.ConnectionString, param, true);
+            return result;
+        }
+
+        public async Task<int> RemoveTeamMemberAsync(int teamMemberId)
+        {
+            Dictionary<string, object> param = new()
+            {
+                { "@Id", teamMemberId }
+            };
+
+            var result = await _sqlDataAccess.PutDataAsync("spTeamMembers_RemoveById", MsSqlConnectionString.ConnectionString, param, true);
+            return result;
+        }
     }
 }
