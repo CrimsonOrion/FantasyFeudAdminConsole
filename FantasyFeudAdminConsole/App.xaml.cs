@@ -58,6 +58,7 @@ namespace FantasyFeudAdminConsole
 
                 .RegisterScoped<ISqlDataAccess, MsSqlDataAccess>()
                 .RegisterScoped<IDataProcessor, DataProcessor>()
+                .RegisterScoped<IWebProcessor, WebProcessor>()
                 ;
         }
 

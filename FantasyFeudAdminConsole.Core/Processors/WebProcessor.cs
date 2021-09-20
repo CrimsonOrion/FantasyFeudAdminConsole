@@ -15,7 +15,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
     public class WebProcessor : IWebProcessor
     {
         private static readonly Uri _eventServerUri = GlobalConfig.WebServerSettings.EventServer;
-        
+
         public WebProcessor() { }
 
         public async Task PostEvent(QuestionModel questionModel)

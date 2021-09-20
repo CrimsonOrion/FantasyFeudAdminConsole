@@ -20,6 +20,7 @@ namespace FantasyFeudAdminConsole
         private readonly IDialogCoordinator _dialogCoordinator;
         private readonly IRegionManager _regionManager;
         private readonly IDataProcessor _dataProcessor;
+        private readonly IWebProcessor _webProcessor;
 
         public static string Title => "Fantasy Feud Admin Console";
 
@@ -79,12 +80,13 @@ namespace FantasyFeudAdminConsole
             set { SetProperty(ref _answer7, value); }
         }
 
-        public MainWindowViewModel(IEventAggregator eventAggregator, IDialogCoordinator dialogCoordinator, IRegionManager regionManager, IDataProcessor dataProcessor)
+        public MainWindowViewModel(IEventAggregator eventAggregator, IDialogCoordinator dialogCoordinator, IRegionManager regionManager, IDataProcessor dataProcessor, IWebProcessor webProcessor)
         {
             _eventAggregator = eventAggregator;
             _dialogCoordinator = dialogCoordinator;
             _regionManager = regionManager;
             _dataProcessor = dataProcessor;
+            _webProcessor = webProcessor;
         }
     }
 }
