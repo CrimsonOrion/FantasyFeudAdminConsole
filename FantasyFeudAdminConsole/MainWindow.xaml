@@ -190,5 +190,74 @@
             </StackPanel>
         </Button>
 
+        <!-- Row 4 -->
+        <Button x:Name="AddStrikeButton" 
+                Grid.Row="4" 
+                Grid.Column="1" 
+                Margin="5" 
+                Command="{Binding AddStrikeCommand}"
+                Content="Add Strike [X]" />
+
+        <Button x:Name="ShowAnswer1Button"
+            Grid.Row="4"
+            Grid.Column="2"
+            Margin="5"
+            Command="{Binding ShowAnswer1Command}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock x:Name="Answer1"
+                    HorizontalAlignment="Center"
+                    Text="{Binding Answer1, FallbackValue=Answer1}" />
+                <TextBlock x:Name="Answer1Value"
+                    HorizontalAlignment="Center"
+                    Text="{Binding Answer1Value, FallbackValue=0}" />
+                <TextBlock x:Name="Answer1Visible"
+                    HorizontalAlignment="Center"
+                    Text="{Binding Answer1Visible, FallbackValue=0}" />
+            </StackPanel>
+        </Button>
+        <Button x:Name="ShowAnswer5"
+            Grid.Row="4"
+            Grid.Column="3"
+            Margin="5"
+            Command="{Binding ShowAnswer5Command}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock x:Name="Answer5"
+                    HorizontalAlignment="Center"
+                    Text="{Binding Answer5, FallbackValue=Answer5}" />
+                <TextBlock x:Name="Answer5Value"
+                    HorizontalAlignment="Center"
+                    Text="{Binding Answer5Value, FallbackValue=0}" />
+                <TextBlock x:Name="Answer5Visible"
+                    HorizontalAlignment="Center"
+                    Text="{Binding Answer5Visible, FallbackValue=0}" />
+            </StackPanel>
+        </Button>
+
+        <ListBox x:Name="Team1MembersList" 
+                 Grid.Row="4" 
+                 Grid.Column="4" 
+                 Grid.RowSpan="2" 
+                 Margin="5"                  
+                 ItemsSource="{Binding Team1Members}"
+                 DisplayMemberPath="Name" 
+                 SelectedItem="{Binding SelectedTeam1Members}" 
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto" />
+        <ListBox x:Name="Team2MembersList" 
+                 Grid.Row="4" 
+                 Grid.Column="5" 
+                 Grid.RowSpan="2" 
+                 Margin="5" 
+                 ItemsSource="{Binding Team2Members}"
+                 DisplayMemberPath="Name" 
+                 SelectedItem="{Binding SelectedTeam2Members}" 
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto" />
+
+        <Button x:Name="RemoveTeam1MemberButton"
+                Grid.Row="4"
+                Grid.Column="6"
+                Margin="5"
+                Command="{Binding RemoveTeam1MemberCommand}"
+                Content="{Binding RemoveTeam1MemberText, FallbackValue=Remove Team 1 Member}" />
+
     </Grid>
 </mah:MetroWindow>
