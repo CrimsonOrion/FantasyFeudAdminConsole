@@ -17,3 +17,5 @@ You will need to add an appSettings.json file. You can use this template:
     }
 }
 ```
+
+Don't forget to change the properties: Build Action = Content; Copy to Output Directory = Copy if newer.
