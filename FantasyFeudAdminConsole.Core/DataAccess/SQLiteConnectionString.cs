@@ -19,7 +19,7 @@ namespace FantasyFeudAdminConsole.Core.DataAccess
                 PageSize = 65536,
                 CacheSize = 16777216,
                 DateTimeFormat = SQLiteDateFormats.ISO8601,
-                FailIfMissing = true
+                FailIfMissing = false
             };
             ConnectionString = connectionString.ToString();
         }

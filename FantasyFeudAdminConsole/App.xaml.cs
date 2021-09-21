@@ -57,8 +57,8 @@ namespace FantasyFeudAdminConsole
 
                 .RegisterInstance<IDialogCoordinator>(new DialogCoordinator())
 
-                .RegisterScoped<IDataAccess, MsSqlDataAccess>()
-                .RegisterScoped<IDataProcessor, DataProcessorMsSql>()
+                .RegisterScoped<IDataAccess, SQLiteDataAccess>()
+                .RegisterScoped<IDataProcessor, DataProcessorSQLite>()
                 .RegisterScoped<IWebProcessor, WebProcessor>()
                 ;
         }
