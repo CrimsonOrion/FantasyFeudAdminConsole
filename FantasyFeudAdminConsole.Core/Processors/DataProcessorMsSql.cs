@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace FantasyFeudAdminConsole.Core.Processors
 {
-    public class DataProcessor : IDataProcessor
+    public class DataProcessorMsSql : IDataProcessor
     {
-        private readonly ISqlDataAccess _sqlDataAccess;
+        private readonly IDataAccess _sqlDataAccess;
 
-        public DataProcessor(ISqlDataAccess sqlDataAccess)
+        public DataProcessorMsSql(IDataAccess sqlDataAccess)
         {
             _sqlDataAccess = sqlDataAccess;
         }
@@ -22,7 +22,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
             {
                 { "@Id", gameId }
             };
-            IEnumerable<GamesDataModel> output = await _sqlDataAccess.GetDataAsync<GamesDataModel, Dictionary<string, object>>("spGames_GetById", MsSqlConnectionString.ConnectionString, param, true);
+            IEnumerable<GamesDataModel> output = await _sqlDataAccess.GetDataAsync<GamesDataModel, Dictionary<string, object>>("spGames_GetById", param, true);
             return output.FirstOrDefault();
         }
 
@@ -32,7 +32,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
             {
                 { "@Id", teamId }
             };
-            IEnumerable<TeamsDataModel> output = await _sqlDataAccess.GetDataAsync<TeamsDataModel, Dictionary<string, object>>("spTeams_GetById", MsSqlConnectionString.ConnectionString, param, true);
+            IEnumerable<TeamsDataModel> output = await _sqlDataAccess.GetDataAsync<TeamsDataModel, Dictionary<string, object>>("spTeams_GetById", param, true);
             return output.FirstOrDefault();
         }
 
@@ -42,7 +42,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
             {
                 { "@TeamId", teamId }
             };
-            IEnumerable<TeamMembersDataModel> output = await _sqlDataAccess.GetDataAsync<TeamMembersDataModel, Dictionary<string, object>>("spTeamMembers_GetByTeamId", MsSqlConnectionString.ConnectionString, param, true);
+            IEnumerable<TeamMembersDataModel> output = await _sqlDataAccess.GetDataAsync<TeamMembersDataModel, Dictionary<string, object>>("spTeamMembers_GetByTeamId", param, true);
             return output;
         }
 
@@ -52,7 +52,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
             {
                 { "@Id", teamMemberId }
             };
-            IEnumerable<TeamMembersDataModel> output = await _sqlDataAccess.GetDataAsync<TeamMembersDataModel, Dictionary<string, object>>("spTeamMembers_GetById", MsSqlConnectionString.ConnectionString, param, true);
+            IEnumerable<TeamMembersDataModel> output = await _sqlDataAccess.GetDataAsync<TeamMembersDataModel, Dictionary<string, object>>("spTeamMembers_GetById", param, true);
             return output.FirstOrDefault();
         }
 
@@ -62,7 +62,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
             {
                 { "@GameId", gameId }
             };
-            IEnumerable<QuestionsDataModel> output = await _sqlDataAccess.GetDataAsync<QuestionsDataModel, Dictionary<string, object>>("spQuestion_GetByGameId", MsSqlConnectionString.ConnectionString, param, true);
+            IEnumerable<QuestionsDataModel> output = await _sqlDataAccess.GetDataAsync<QuestionsDataModel, Dictionary<string, object>>("spQuestion_GetByGameId", param, true);
             return output;
         }
 
@@ -72,7 +72,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
             {
                 { "@QuestionId", questionId }
             };
-            IEnumerable<AnswersDataModel> output = await _sqlDataAccess.GetDataAsync<AnswersDataModel, Dictionary<string, object>>("spAnswers_GetByQuestionId", MsSqlConnectionString.ConnectionString, param, true);
+            IEnumerable<AnswersDataModel> output = await _sqlDataAccess.GetDataAsync<AnswersDataModel, Dictionary<string, object>>("spAnswers_GetByQuestionId", param, true);
             return output;
         }
 
@@ -84,7 +84,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
                 { "@Id", answer.Id },
                 { "@Visible", answer.Visible }
             };
-            var result = await _sqlDataAccess.PutDataAsync("spAnswers_UpdateVisibleById", MsSqlConnectionString.ConnectionString, param, true);
+            var result = await _sqlDataAccess.PutDataAsync("spAnswers_UpdateVisibleById", param, true);
             return result;
         }
 
@@ -97,7 +97,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
                 { "@Score", newScore }
             };
 
-            var result = await _sqlDataAccess.PutDataAsync("spGames_UpdateTeamScoreById", MsSqlConnectionString.ConnectionString, param, true);
+            var result = await _sqlDataAccess.PutDataAsync("spGames_UpdateTeamScoreById", param, true);
             return result;
         }
 
@@ -109,7 +109,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
                 { "@InactiveId", inactiveMemberId }
             };
 
-            var result = await _sqlDataAccess.PutDataAsync("spTeamMembers_UpdateActiveById", MsSqlConnectionString.ConnectionString, param, true);
+            var result = await _sqlDataAccess.PutDataAsync("spTeamMembers_UpdateActiveById", param, true);
             return result;
         }
 
@@ -123,7 +123,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
                 { "@Active", model.Active }
             };
 
-            var result = await _sqlDataAccess.PostDataAsync("spTeamMembers_Add", MsSqlConnectionString.ConnectionString, param, true);
+            var result = await _sqlDataAccess.PostDataAsync("spTeamMembers_Add", param, true);
             return result;
         }
 
@@ -134,7 +134,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
                 { "@Id", teamMemberId }
             };
 
-            var result = await _sqlDataAccess.DeleteDataAsync("spTeamMembers_RemoveById", MsSqlConnectionString.ConnectionString, param, true);
+            var result = await _sqlDataAccess.DeleteDataAsync("spTeamMembers_RemoveById", param, true);
             return result;
         }
 
@@ -146,7 +146,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
                 { "@Strikes", model.Strikes }
             };
 
-            var result = await _sqlDataAccess.PutDataAsync("spQuestions_UpdateStrikesById", MsSqlConnectionString.ConnectionString, param, true);
+            var result = await _sqlDataAccess.PutDataAsync("spQuestions_UpdateStrikesById", param, true);
             return result;
         }
 
@@ -158,7 +158,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
                 { "@TeamName", model.TeamName }
             };
 
-            var result = await _sqlDataAccess.PutDataAsync("spTeams_UpdateTeamNameById", MsSqlConnectionString.ConnectionString, param, true);
+            var result = await _sqlDataAccess.PutDataAsync("spTeams_UpdateTeamNameById", param, true);
             return result;
         }
 
@@ -171,7 +171,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
                 { "@Team2Score", model.Team2Score }
             };
 
-            var result = await _sqlDataAccess.PutDataAsync("spGames_UpdateScoresById", MsSqlConnectionString.ConnectionString, param, true);
+            var result = await _sqlDataAccess.PutDataAsync("spGames_UpdateScoresById", param, true);
             return result;
         }
     }

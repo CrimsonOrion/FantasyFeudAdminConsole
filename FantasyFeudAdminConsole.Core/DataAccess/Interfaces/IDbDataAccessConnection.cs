@@ -2,6 +2,6 @@
 {
     public interface IDbDataAccessConnection
     {
-        bool TestConnection(string connectionString);
+        bool TestConnection();
     }
 }

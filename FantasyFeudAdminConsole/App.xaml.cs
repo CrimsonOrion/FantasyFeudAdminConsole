@@ -51,13 +51,14 @@ namespace FantasyFeudAdminConsole
             };
 
             MsSqlConnectionString.SetConnectionString(GlobalConfig.DatabaseSettings.DataSource, GlobalConfig.DatabaseSettings.InitialCatalog, GlobalConfig.DatabaseSettings.UserId, GlobalConfig.DatabaseSettings.Password, GlobalConfig.DatabaseSettings.PersistSecurityInfo);
+            SQLiteConnectionString.SetConnectionString(GlobalConfig.DatabaseSettings.DataSource);
 
             _ = containerRegistry
 
                 .RegisterInstance<IDialogCoordinator>(new DialogCoordinator())
 
-                .RegisterScoped<ISqlDataAccess, MsSqlDataAccess>()
-                .RegisterScoped<IDataProcessor, DataProcessor>()
+                .RegisterScoped<IDataAccess, MsSqlDataAccess>()
+                .RegisterScoped<IDataProcessor, DataProcessorMsSql>()
                 .RegisterScoped<IWebProcessor, WebProcessor>()
                 ;
         }

@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Threading.Tasks;
+﻿using Dapper;
 
-using Dapper;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SQLite;
+using System.Threading.Tasks;
 
 namespace FantasyFeudAdminConsole.Core.DataAccess
 {
-    public class MsSqlDataAccess : IDataAccess
+    public class SQLiteDataAccess : IDataAccess
     {
-        readonly static string _connectionString = MsSqlConnectionString.ConnectionString;
+        private static readonly string _connectionString = SQLiteConnectionString.ConnectionString;
 
         public async Task<int> DeleteDataAsync(string queryOrStoredProcedure, bool isStoredProcedure, int? commandTimeout) => await PostDataAsync(queryOrStoredProcedure, isStoredProcedure, commandTimeout);
 
@@ -17,7 +18,7 @@ namespace FantasyFeudAdminConsole.Core.DataAccess
 
         public async Task<IEnumerable<T>> GetDataAsync<T>(string queryOrStoredProcedure, bool isStoredProcedure, int? commandTimeout)
         {
-            using IDbConnection conn = new SqlConnection(_connectionString);
+            using IDbConnection conn = new SQLiteConnection(_connectionString);
             IEnumerable<T> rows = isStoredProcedure ?
                 await conn.QueryAsync<T>(queryOrStoredProcedure, commandType: CommandType.StoredProcedure, commandTimeout: commandTimeout) :
                 await conn.QueryAsync<T>(queryOrStoredProcedure, commandTimeout: commandTimeout);
@@ -27,7 +28,7 @@ namespace FantasyFeudAdminConsole.Core.DataAccess
 
         public async Task<IEnumerable<T>> GetDataAsync<T, U>(string queryOrStoredProcedure, U parameters, bool isStoredProcedure, int? commandTimeout)
         {
-            using IDbConnection conn = new SqlConnection(_connectionString);
+            using IDbConnection conn = new SQLiteConnection(_connectionString);
             IEnumerable<T> rows = isStoredProcedure ?
                 await conn.QueryAsync<T>(queryOrStoredProcedure, GetParameters(parameters), commandType: CommandType.StoredProcedure, commandTimeout: commandTimeout) :
                 await conn.QueryAsync<T>(queryOrStoredProcedure, commandTimeout: commandTimeout);
@@ -36,7 +37,7 @@ namespace FantasyFeudAdminConsole.Core.DataAccess
         }
         public async Task<int> PostDataAsync(string queryOrStoredProcedure, bool isStoredProcedure, int? commandTimeout)
         {
-            using IDbConnection conn = new SqlConnection(_connectionString);
+            using IDbConnection conn = new SQLiteConnection(_connectionString);
             return isStoredProcedure ?
                 await conn.ExecuteAsync(queryOrStoredProcedure, commandType: CommandType.StoredProcedure) :
                 await conn.ExecuteAsync(queryOrStoredProcedure, commandTimeout: commandTimeout);
@@ -44,7 +45,7 @@ namespace FantasyFeudAdminConsole.Core.DataAccess
 
         public async Task<int> PostDataAsync<T>(string queryOrStoredProcedure, T data, bool isStoredProcedure, int? commandTimeout)
         {
-            using IDbConnection conn = new SqlConnection(_connectionString);
+            using IDbConnection conn = new SQLiteConnection(_connectionString);
             return isStoredProcedure ?
                 await conn.ExecuteAsync(queryOrStoredProcedure, data, commandType: CommandType.StoredProcedure) :
                 await conn.ExecuteAsync(queryOrStoredProcedure, data, commandTimeout: commandTimeout);
@@ -52,7 +53,7 @@ namespace FantasyFeudAdminConsole.Core.DataAccess
 
         public async Task<int> PostDataTransactionAsync<T>(string queryOrStoredProcedure, IEnumerable<T> data, bool isStoredProcedure, int? commandTimeout)
         {
-            using IDbConnection conn = new SqlConnection(_connectionString);
+            using IDbConnection conn = new SQLiteConnection(_connectionString);
             conn.Open();
             IDbTransaction trans = conn.BeginTransaction();
             var affectedRecords = 0;
@@ -62,7 +63,7 @@ namespace FantasyFeudAdminConsole.Core.DataAccess
                     await conn.ExecuteAsync(queryOrStoredProcedure, data, transaction: trans, commandType: CommandType.StoredProcedure, commandTimeout: commandTimeout) :
                     await conn.ExecuteAsync(queryOrStoredProcedure, data, transaction: trans, commandTimeout: commandTimeout);
             }
-            catch (SqlException)
+            catch (SQLiteException)
             {
                 // Report the error in post
             }
@@ -72,7 +73,7 @@ namespace FantasyFeudAdminConsole.Core.DataAccess
 
         public async Task<int> PostDataTransactionForEachAsync<T>(string queryOrStoredProcedure, IEnumerable<T> data, bool isStoredProcedure, int? commandTimeout)
         {
-            using IDbConnection conn = new SqlConnection(_connectionString);
+            using IDbConnection conn = new SQLiteConnection(_connectionString);
             conn.Open();
             IDbTransaction trans = conn.BeginTransaction();
             var affectedRecords = 0;
@@ -84,7 +85,7 @@ namespace FantasyFeudAdminConsole.Core.DataAccess
                         await conn.ExecuteAsync(queryOrStoredProcedure, item, transaction: trans, commandType: CommandType.StoredProcedure, commandTimeout: commandTimeout) :
                         await conn.ExecuteAsync(queryOrStoredProcedure, item, transaction: trans, commandTimeout: commandTimeout);
                 }
-                catch (SqlException)
+                catch (SQLiteException)
                 {
                     // Report the error in post
                 }
@@ -99,7 +100,7 @@ namespace FantasyFeudAdminConsole.Core.DataAccess
 
         public bool TestConnection()
         {
-            using IDbConnection conn = new SqlConnection(_connectionString);
+            using IDbConnection conn = new SQLiteConnection(_connectionString);
             conn.Open();
             return conn.State == ConnectionState.Open;
         }
