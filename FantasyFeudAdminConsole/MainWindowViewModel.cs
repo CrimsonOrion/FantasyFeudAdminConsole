@@ -25,6 +25,10 @@ namespace FantasyFeudAdminConsole
 
         public static string Title => "Fantasy Feud Admin Console";
 
+        #region Properties
+
+        #region Database Data
+
         private GamesDataModel _gameData = new();
         public GamesDataModel GameData
         {
@@ -95,6 +99,17 @@ namespace FantasyFeudAdminConsole
             set => SetProperty(ref _answersData, value);
         }
 
+        #endregion
+
+        #region UI Data
+
+        private int _gameId;
+        public int GameId
+        {
+            get => _gameId;
+            set => SetProperty(ref _gameId, value);
+        }
+
         private int _questionId;
         public int QuestionId
         {
@@ -102,9 +117,54 @@ namespace FantasyFeudAdminConsole
             set => SetProperty(ref _questionId, value);
         }
 
-        public DelegateCommand GetDataCommand => new(GetData);
+        private int _strikes;
+        public int Strikes
+        {
+            get => _strikes;
+            set => SetProperty(ref _strikes, value);
+        }
+
+        private string _question;
+        public string Question
+        {
+            get => _question;
+            set => SetProperty(ref _question, value);
+        }
+
+        private string _answer0;
+        public string Answer0
+        {
+            get { return _answer0; }
+            set { SetProperty(ref _answer0, value); }
+        }
+
+        private int _answer0Value;
+        public int Answer0Value
+        {
+            get { return _answer0Value; }
+            set { SetProperty(ref _answer0Value, value); }
+        }
+
+        private int _answer0Visible;
+        public int Answer0Visible
+        {
+            get { return _answer0Visible; }
+            set { SetProperty(ref _answer0Visible, value); }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Commands
+
+        public DelegateCommand AddStrikeCommand => new(AddStrike);
         public DelegateCommand NextQuestionCommand => new(NextQuestion);
+        public DelegateCommand GetDataCommand => new(GetData);
+        public DelegateCommand ProcessChangesCommand => new(ProcessChanges);
         public DelegateCommand<string> ShowAnswerCommand => new(ShowAnswer);
+
+        #endregion
 
         public MainWindowViewModel(IEventAggregator eventAggregator, IDialogCoordinator dialogCoordinator, IRegionManager regionManager, IDataProcessor dataProcessor, IWebProcessor webProcessor)
         {
@@ -113,6 +173,17 @@ namespace FantasyFeudAdminConsole
             _regionManager = regionManager;
             _dataProcessor = dataProcessor;
             _webProcessor = webProcessor;
+        }
+
+        private async void AddStrike()
+        {
+
+        }
+
+        private void NextQuestion()
+        {
+            QuestionData = QuestionDataList.FirstOrDefault(_ => _.Id == ++QuestionData.Id);
+            QuestionId = QuestionData.Id;
         }
 
         private async void GetData()
@@ -127,16 +198,26 @@ namespace FantasyFeudAdminConsole
             AnswersData = new(await _dataProcessor.GetAnswersDataAsync(QuestionData.Id));
         }
 
-        private void NextQuestion()
+        async void ProcessChanges()
         {
-            QuestionData = QuestionDataList.FirstOrDefault(_ => _.Id == ++QuestionData.Id);
-            QuestionId = QuestionData.Id;
+
         }
 
         private async void ShowAnswer(string index)
         {
             var answerIndex = Convert.ToInt16(index);
-            _ = await _dialogCoordinator.ShowMessageAsync(this, "yay", $"You selected Answer {answerIndex}");
+
+            var model = AnswersData.FirstOrDefault(_ => _.Id == answerIndex);
+            model.Visible = model.Visible == 1 ? 0 : 1;
+            await _dataProcessor.ShowAnswerAsync(model);
+            switch (index)
+            {
+                case "0":
+                    Answer0Visible = model.Visible;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

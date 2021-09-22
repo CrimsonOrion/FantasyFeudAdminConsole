@@ -7,95 +7,135 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
-
-using static System.Net.Mime.MediaTypeNames;
 
 namespace FantasyFeudAdminConsole.Core.Processors
 {
     public class DataProcessorSQLite : IDataProcessor
     {
-        private IDataAccess _sqliteDataAccess;
+        private readonly IDataAccess _sqliteDataAccess;
 
         public DataProcessorSQLite(IDataAccess sqliteDataAccess)
         {
             _sqliteDataAccess = sqliteDataAccess;
-            CreateDatabase();
         }
 
-        public Task<int> AddStrikeAsync(QuestionsDataModel model)
+        public async Task<int> AddStrikeAsync(QuestionsDataModel model)
         {
             throw new NotImplementedException();
         }
 
-        public Task<int> AddTeamMemberAsync(TeamMembersDataModel model)
+        public async Task<int> AddTeamMemberAsync(TeamMembersDataModel model)
         {
             throw new NotImplementedException();
         }
 
-        public Task<int> AwardPointsAsync(int gameId, int teamNumber, int newScore)
+        public async Task<int> AwardPointsAsync(int gameId, int teamNumber, int newScore)
         {
             throw new NotImplementedException();
         }
 
-        public Task<int> ChangeActiveMemberAsync(int inactiveMemberId, int activeMemberId)
+        public async Task<int> ChangeActiveMemberAsync(int inactiveMemberId, int activeMemberId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<int> ChangeTeamNamesAsync(TeamsDataModel model)
+        public async Task<int> ChangeTeamNamesAsync(TeamsDataModel model)
         {
             throw new NotImplementedException();
         }
 
-        public Task<int> ChangeTeamScoreAsync(GamesDataModel model)
+        public async Task<int> ChangeTeamScoreAsync(GamesDataModel model)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<AnswersDataModel>> GetAnswersDataAsync(int questionId)
+        public async Task<IEnumerable<AnswersDataModel>> GetAnswersDataAsync(int questionId)
+        {
+            //TODO: Fix this!!!
+            var query = "" +
+                "SELECT * " +
+                "FROM Answers " +
+                $"WHERE QuestionId = {questionId}";
+
+            IEnumerable<AnswersDataModel> data = await _sqliteDataAccess.GetDataAsync<AnswersDataModel>(query);
+            return data;
+        }
+
+        public async Task<GamesDataModel> GetGameDataAsync(int gameId)
+        {
+            await CreateDatabase();
+
+            var query = "" +
+                "SELECT * " +
+                "FROM Games " +
+                $"WHERE Id = {gameId}";
+
+            IEnumerable<GamesDataModel> data = await _sqliteDataAccess.GetDataAsync<GamesDataModel>(query);
+            return data.FirstOrDefault();
+        }
+
+        public async Task<IEnumerable<QuestionsDataModel>> GetQuestionsDataAsync(int gameId)
+        {
+            var query = "" +
+                "SELECT * " +
+                "FROM Questions " +
+                $"WHERE GameId = {gameId}";
+
+            IEnumerable<QuestionsDataModel> data = await _sqliteDataAccess.GetDataAsync<QuestionsDataModel>(query);
+            return data;
+        }
+
+        public async Task<TeamsDataModel> GetTeamDataAsync(int teamId)
+        {
+            var query = "" +
+                "SELECT * " +
+                "FROM Teams " +
+                $"WHERE Id = {teamId}";
+
+            IEnumerable<TeamsDataModel> data = await _sqliteDataAccess.GetDataAsync<TeamsDataModel>(query);
+            return data.FirstOrDefault();
+        }
+
+        public async Task<TeamMembersDataModel> GetTeamMemberDataAsync(int teamMemberId)
+        {
+            var query = "" +
+                "SELECT * " +
+                "FROM TeamMembers " +
+                $"WHERE Id = {teamMemberId}";
+
+            IEnumerable<TeamMembersDataModel> data = await _sqliteDataAccess.GetDataAsync<TeamMembersDataModel>(query);
+            return data.FirstOrDefault();
+        }
+
+        public async Task<IEnumerable<TeamMembersDataModel>> GetTeamMembersDataAsync(int teamId)
+        {
+            var query = "" +
+                "SELECT * " +
+                "FROM TeamMembers " +
+                $"WHERE TeamId = {teamId}";
+
+            IEnumerable<TeamMembersDataModel> data = await _sqliteDataAccess.GetDataAsync<TeamMembersDataModel>(query);
+            return data;
+        }
+
+        public async Task<int> RemoveTeamMemberAsync(int teamMemberId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<GamesDataModel> GetGameDataAsync(int gameId)
+        public async Task<int> ShowAnswerAsync(AnswersDataModel answer)
         {
-            throw new NotImplementedException();
+            var query = $"" +
+                $"UPDATE Answers " +
+                $"SET Visible = {answer.Visible} " +
+                $"WHERE Id = {answer.Id}";
+
+            var result = await _sqliteDataAccess.PutDataAsync(query);
+            return result;
         }
 
-        public Task<IEnumerable<QuestionsDataModel>> GetQuestionsDataAsync(int gameId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<TeamsDataModel> GetTeamDataAsync(int teamId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<TeamMembersDataModel> GetTeamMemberDataAsync(int teamMemberId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<TeamMembersDataModel>> GetTeamMembersDataAsync(int teamId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<int> RemoveTeamMemberAsync(int teamMemberId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<int> ShowAnswerAsync(AnswersDataModel answer)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task<int> CreateDatabase()
+        private async Task<int> CreateDatabase()
         {
             if (!File.Exists(GlobalConfig.DatabaseSettings.DataSource))
             {

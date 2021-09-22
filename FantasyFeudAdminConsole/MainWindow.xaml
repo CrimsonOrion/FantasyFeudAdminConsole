@@ -13,13 +13,13 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="120" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="10" />
         </Grid.ColumnDefinitions>
@@ -51,7 +51,7 @@
             <TextBox x:Name="GameIdText"
                 Margin="5"
                 VerticalAlignment="Center"
-                Text="{Binding GameData.Id, FallbackValue=0, UpdateSourceTrigger=PropertyChanged}" />
+                Text="{Binding GameId, FallbackValue=0, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
         <StackPanel
@@ -67,7 +67,7 @@
             <TextBlock x:Name="QuestionIdText"
                 Margin="5"
                 VerticalAlignment="Center"
-                Text="{Binding QuestionData.Id, FallbackValue=0, UpdateSourceTrigger=Default}" />
+                Text="{Binding QuestionId, FallbackValue=0, UpdateSourceTrigger=Default}" />
         </StackPanel>
 
         <StackPanel
@@ -81,7 +81,7 @@
                 Text="Strikes:" />
             <TextBox x:Name="StrikesText"
                 VerticalAlignment="Center"
-                Text="{Binding Question.Strikes, FallbackValue=0, UpdateSourceTrigger=PropertyChanged}" />
+                Text="{Binding Strikes, FallbackValue=0, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
         <Button x:Name="AddStrikeButton"
@@ -102,7 +102,7 @@
         <Button x:Name="GetDataButton"
             Grid.Row="1"
             Grid.Column="7"
-            Margin="5"
+            Margin="10,5"
             Command="{Binding GetDataCommand}"
             Content="Get Data" />
 
@@ -122,15 +122,18 @@
             Margin="5"
             VerticalAlignment="Center"
             FontWeight="Bold"
-            Text="{Binding Question.Question, FallbackValue=Show Question Here}" />
+            Text="{Binding Question, FallbackValue=Show Question Here}" />
 
         <!--  Row 3  -->
         <Button x:Name="ProcessChangesButton"
             Grid.Row="3"
             Grid.Column="1"
             Margin="5"
-            Command="{Binding ProcessChangesCommand}"
-            Content="Process changes" />
+            Command="{Binding ProcessChangesCommand}">
+            <TextBlock
+                TextWrapping="Wrap"
+                Text="Process Changes" />
+        </Button>
 
         <Button x:Name="ShowAnswer0Button"
             Grid.Row="3"
