@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace FantasyFeudAdminConsole.Core.Processors
 {
@@ -22,12 +23,23 @@ namespace FantasyFeudAdminConsole.Core.Processors
 
         public async Task<int> AddStrikeAsync(QuestionsDataModel model)
         {
-            throw new NotImplementedException();
+            var query = $"" +
+                $"UPDATE Questions " +
+                $"SET Strikes = {model.Strikes} " +
+                $"WHERE Id = {model.Id}";
+
+            var result = await _sqliteDataAccess.PutDataAsync(query);
+            return result;
         }
 
         public async Task<int> AddTeamMemberAsync(TeamMembersDataModel model)
         {
-            throw new NotImplementedException();
+            var query = $"" +
+                $"INSERT INTO TeamMembers VALUES " +
+                $"({model.Id}, {model.TeamId}, '{model.Name}', {model.Active});";
+
+            var result = await _sqliteDataAccess.PostDataAsync(query);
+            return result;
         }
 
         public async Task<int> AwardPointsAsync(int gameId, int teamNumber, int newScore)
@@ -37,7 +49,17 @@ namespace FantasyFeudAdminConsole.Core.Processors
 
         public async Task<int> ChangeActiveMemberAsync(int inactiveMemberId, int activeMemberId)
         {
-            throw new NotImplementedException();
+            var query = $"" +
+                $"UPDATE TeamMembers " +
+                $"SET Active = 0 " +
+                $"WHERE Id = {inactiveMemberId}; " +
+                $"" +
+                $"UPDATE TeamMembers " +
+                $"SET Active = 1 " +
+                $"WHERE Id = {activeMemberId};";
+
+            var result = await _sqliteDataAccess.PutDataAsync(query);
+            return result;
         }
 
         public async Task<int> ChangeTeamNamesAsync(TeamsDataModel model)
@@ -113,7 +135,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
             var query = "" +
                 "SELECT * " +
                 "FROM TeamMembers " +
-                $"WHERE TeamId = {teamId}";
+                $"WHERE TeamId = {teamId} AND Name NOT LIKE ''";
 
             IEnumerable<TeamMembersDataModel> data = await _sqliteDataAccess.GetDataAsync<TeamMembersDataModel>(query);
             return data;

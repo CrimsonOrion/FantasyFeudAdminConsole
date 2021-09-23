@@ -97,7 +97,8 @@
             Margin="5"
             VerticalAlignment="Center"
             Command="{Binding NextQuestionCommand}"
-            Content="Next Question" />
+            Content="Next Question"
+            IsEnabled="{Binding NextQuestionIsEnabled}" />
 
         <Button x:Name="GetDataButton"
             Grid.Row="1"
@@ -131,8 +132,8 @@
             Margin="5"
             Command="{Binding ProcessChangesCommand}">
             <TextBlock
-                TextWrapping="Wrap"
-                Text="Process Changes" />
+                Text="Process Changes"
+                TextWrapping="Wrap" />
         </Button>
 
         <Button x:Name="ShowAnswer0Button"
@@ -140,7 +141,8 @@
             Grid.Column="2"
             Margin="5"
             Command="{Binding ShowAnswerCommand}"
-            CommandParameter="0">
+            CommandParameter="0"
+            IsEnabled="{Binding Answer0IsEnabled}">
             <StackPanel Orientation="Vertical">
                 <TextBlock x:Name="Answer0"
                     HorizontalAlignment="Center"
@@ -159,7 +161,8 @@
             Grid.Column="3"
             Margin="5"
             Command="{Binding ShowAnswerCommand}"
-            CommandParameter="4">
+            CommandParameter="4"
+            IsEnabled="{Binding Answer4IsEnabled}">
             <StackPanel Orientation="Vertical">
                 <TextBlock x:Name="Answer4"
                     HorizontalAlignment="Center"
@@ -209,7 +212,8 @@
             Grid.Row="3"
             Grid.Column="6"
             Margin="5"
-            Command="{Binding AddTeam1MemberCommand}">
+            Command="{Binding AddTeamMemberCommand}"
+            CommandParameter="1">
             <StackPanel Orientation="Vertical">
                 <TextBlock
                     HorizontalAlignment="Center"
@@ -224,7 +228,8 @@
             Grid.Row="3"
             Grid.Column="7"
             Margin="5"
-            Command="{Binding AddTeam2MemberCommand}">
+            Command="{Binding AddTeamMemberCommand}"
+            CommandParameter="2">
             <StackPanel Orientation="Vertical">
                 <TextBlock
                     HorizontalAlignment="Center"
@@ -248,7 +253,8 @@
             Grid.Column="2"
             Margin="5"
             Command="{Binding ShowAnswerCommand}"
-            CommandParameter="1">
+            CommandParameter="1"
+            IsEnabled="{Binding Answer1IsEnabled}">
             <StackPanel Orientation="Vertical">
                 <TextBlock x:Name="Answer1"
                     HorizontalAlignment="Center"
@@ -267,7 +273,8 @@
             Grid.Column="3"
             Margin="5"
             Command="{Binding ShowAnswerCommand}"
-            CommandParameter="5">
+            CommandParameter="5"
+            IsEnabled="{Binding Answer5IsEnabled}">
             <StackPanel Orientation="Vertical">
                 <TextBlock x:Name="Answer5"
                     HorizontalAlignment="Center"
@@ -283,29 +290,46 @@
 
         <ListBox x:Name="Team1MembersList"
             Grid.Row="4"
-            Grid.RowSpan="2"
+            Grid.RowSpan="3"
             Grid.Column="4"
             Margin="5"
             DisplayMemberPath="Name"
             ItemsSource="{Binding Team1Members}"
             ScrollViewer.HorizontalScrollBarVisibility="Auto"
-            SelectedItem="{Binding SelectedTeam1Members}" />
+            SelectedItem="{Binding SelectedTeam1Member}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction
+                        Command="{Binding ChangeActiveMemberCommand}"
+                        CommandParameter="1" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </ListBox>
 
         <ListBox x:Name="Team2MembersList"
             Grid.Row="4"
-            Grid.RowSpan="2"
+            Grid.RowSpan="3"
             Grid.Column="5"
             Margin="5"
             DisplayMemberPath="Name"
             ItemsSource="{Binding Team2Members}"
             ScrollViewer.HorizontalScrollBarVisibility="Auto"
-            SelectedItem="{Binding SelectedTeam2Members}" />
+            SelectedItem="{Binding SelectedTeam2Member}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction
+                        Command="{Binding ChangeActiveMemberCommand}"
+                        CommandParameter="2" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </ListBox>
 
         <Button x:Name="RemoveTeam1MemberButton"
             Grid.Row="4"
             Grid.Column="6"
             Margin="5"
-            Command="{Binding RemoveTeam1MemberCommand}">
+            Command="{Binding RemoveTeamMemberCommand}"
+            CommandParameter="1">
             <StackPanel Orientation="Vertical">
                 <TextBlock
                     HorizontalAlignment="Center"
@@ -320,7 +344,8 @@
             Grid.Row="4"
             Grid.Column="7"
             Margin="5"
-            Command="{Binding RemoveTeam2MemberCommand}">
+            Command="{Binding RemoveTeamMemberCommand}"
+            CommandParameter="2">
             <StackPanel Orientation="Vertical">
                 <TextBlock
                     HorizontalAlignment="Center"
@@ -337,7 +362,8 @@
             Grid.Column="2"
             Margin="5"
             Command="{Binding ShowAnswerCommand}"
-            CommandParameter="2">
+            CommandParameter="2"
+            IsEnabled="{Binding Answer2IsEnabled}">
             <StackPanel Orientation="Vertical">
                 <TextBlock x:Name="Answer2"
                     HorizontalAlignment="Center"
@@ -356,7 +382,8 @@
             Grid.Column="3"
             Margin="5"
             Command="{Binding ShowAnswerCommand}"
-            CommandParameter="6">
+            CommandParameter="6"
+            IsEnabled="{Binding Answer6IsEnabled}">
             <StackPanel Orientation="Vertical">
                 <TextBlock x:Name="Answer6"
                     HorizontalAlignment="Center"
@@ -370,13 +397,46 @@
             </StackPanel>
         </Button>
 
+        <Button x:Name="ReorderTeam1MemberButton"
+            Grid.Row="5"
+            Grid.Column="6"
+            Margin="5"
+            Command="{Binding ReorderTeamMemberCommand}"
+            CommandParameter="1">
+            <StackPanel Orientation="Vertical">
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Text="{Binding Team1Name, FallbackValue=Team 1 Name}" />
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Text="Reorder Member" />
+            </StackPanel>
+        </Button>
+
+        <Button x:Name="ReorderTeam2MemberButton"
+            Grid.Row="5"
+            Grid.Column="7"
+            Margin="5"
+            Command="{Binding ReorderTeamMemberCommand}"
+            CommandParameter="2">
+            <StackPanel Orientation="Vertical">
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Text="{Binding Team2Name, FallbackValue=Team 2 Name}" />
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Text="Reorder Member" />
+            </StackPanel>
+        </Button>
+
         <!--  Row 6  -->
         <Button x:Name="ShowAnswer3Button"
             Grid.Row="6"
             Grid.Column="2"
             Margin="5"
             Command="{Binding ShowAnswerCommand}"
-            CommandParameter="3">
+            CommandParameter="3"
+            IsEnabled="{Binding Answer3IsEnabled}">
             <StackPanel Orientation="Vertical">
                 <TextBlock x:Name="Answer3"
                     HorizontalAlignment="Center"
@@ -395,7 +455,8 @@
             Grid.Column="3"
             Margin="5"
             Command="{Binding ShowAnswerCommand}"
-            CommandParameter="7">
+            CommandParameter="7"
+            IsEnabled="{Binding Answer7IsEnabled}">
             <StackPanel Orientation="Vertical">
                 <TextBlock x:Name="Answer7"
                     HorizontalAlignment="Center"
@@ -413,7 +474,8 @@
             Grid.Row="6"
             Grid.Column="6"
             Margin="5"
-            Command="{Binding AwardTeam1Command}">
+            Command="{Binding AwardTeamCommand}"
+            CommandParameter="1">
             <StackPanel Orientation="Vertical">
                 <TextBlock
                     HorizontalAlignment="Center"
@@ -428,7 +490,8 @@
             Grid.Row="6"
             Grid.Column="7"
             Margin="5"
-            Command="{Binding AwardTeam2Command}">
+            Command="{Binding AwardTeamCommand}"
+            CommandParameter="2">
             <StackPanel Orientation="Vertical">
                 <TextBlock
                     HorizontalAlignment="Center"

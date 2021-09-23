@@ -11,6 +11,7 @@ using Prism.Regions;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace FantasyFeudAdminConsole
@@ -78,20 +79,6 @@ namespace FantasyFeudAdminConsole
             set => SetProperty(ref _team2Members, value);
         }
 
-        private TeamMembersDataModel _selectedTeam1Member = new();
-        public TeamMembersDataModel SelectedTeam1Member
-        {
-            get => _selectedTeam1Member;
-            set => SetProperty(ref _selectedTeam1Member, value);
-        }
-
-        private TeamMembersDataModel _selectedTeam2Member = new();
-        public TeamMembersDataModel SelectedTeam2Member
-        {
-            get => _selectedTeam2Member;
-            set => SetProperty(ref _selectedTeam2Member, value);
-        }
-
         private List<AnswersDataModel> _answersData = new();
         public List<AnswersDataModel> AnswersData
         {
@@ -131,25 +118,277 @@ namespace FantasyFeudAdminConsole
             set => SetProperty(ref _question, value);
         }
 
+        private string _team1Name;
+        public string Team1Name
+        {
+            get => _team1Name;
+            set => SetProperty(ref _team1Name, value);
+        }
+
+        private int _team1Score;
+        public int Team1Score
+        {
+            get => _team1Score;
+            set => SetProperty(ref _team1Score, value);
+        }
+
+        private string _team2Name;
+        public string Team2Name
+        {
+            get => _team2Name;
+            set => SetProperty(ref _team2Name, value);
+        }
+
+        private int _team2Score;
+        public int Team2Score
+        {
+            get => _team2Score;
+            set => SetProperty(ref _team2Score, value);
+        }
+
         private string _answer0;
         public string Answer0
         {
-            get { return _answer0; }
-            set { SetProperty(ref _answer0, value); }
+            get => _answer0;
+            set => SetProperty(ref _answer0, value);
         }
 
         private int _answer0Value;
         public int Answer0Value
         {
-            get { return _answer0Value; }
-            set { SetProperty(ref _answer0Value, value); }
+            get => _answer0Value;
+            set => SetProperty(ref _answer0Value, value);
         }
 
         private int _answer0Visible;
         public int Answer0Visible
         {
-            get { return _answer0Visible; }
-            set { SetProperty(ref _answer0Visible, value); }
+            get => _answer0Visible;
+            set => SetProperty(ref _answer0Visible, value);
+        }
+
+        private bool _answer0IsEnabled;
+        public bool Answer0IsEnabled
+        {
+            get => _answer0IsEnabled;
+            set => SetProperty(ref _answer0IsEnabled, value);
+        }
+
+        private string _answer1;
+        public string Answer1
+        {
+            get => _answer1;
+            set => SetProperty(ref _answer1, value);
+        }
+
+        private int _answer1Value;
+        public int Answer1Value
+        {
+            get => _answer1Value;
+            set => SetProperty(ref _answer1Value, value);
+        }
+
+        private int _answer1Visible;
+        public int Answer1Visible
+        {
+            get => _answer1Visible;
+            set => SetProperty(ref _answer1Visible, value);
+        }
+
+        private bool _answer1IsEnabled;
+        public bool Answer1IsEnabled
+        {
+            get => _answer1IsEnabled;
+            set => SetProperty(ref _answer1IsEnabled, value);
+        }
+
+        private string _answer2;
+        public string Answer2
+        {
+            get => _answer2;
+            set => SetProperty(ref _answer2, value);
+        }
+
+        private int _answer2Value;
+        public int Answer2Value
+        {
+            get => _answer2Value;
+            set => SetProperty(ref _answer2Value, value);
+        }
+
+        private int _answer2Visible;
+        public int Answer2Visible
+        {
+            get => _answer2Visible;
+            set => SetProperty(ref _answer2Visible, value);
+        }
+
+        private bool _answer2IsEnabled;
+        public bool Answer2IsEnabled
+        {
+            get => _answer2IsEnabled;
+            set => SetProperty(ref _answer2IsEnabled, value);
+        }
+
+        private string _answer3;
+        public string Answer3
+        {
+            get => _answer3;
+            set => SetProperty(ref _answer3, value);
+        }
+
+        private int _answer3Value;
+        public int Answer3Value
+        {
+            get => _answer3Value;
+            set => SetProperty(ref _answer3Value, value);
+        }
+
+        private int _answer3Visible;
+        public int Answer3Visible
+        {
+            get => _answer3Visible;
+            set => SetProperty(ref _answer3Visible, value);
+        }
+
+        private bool _answer3IsEnabled;
+        public bool Answer3IsEnabled
+        {
+            get => _answer3IsEnabled;
+            set => SetProperty(ref _answer3IsEnabled, value);
+        }
+
+        private string _answer4;
+        public string Answer4
+        {
+            get => _answer4;
+            set => SetProperty(ref _answer4, value);
+        }
+
+        private int _answer4Value;
+        public int Answer4Value
+        {
+            get => _answer4Value;
+            set => SetProperty(ref _answer4Value, value);
+        }
+
+        private int _answer4Visible;
+        public int Answer4Visible
+        {
+            get => _answer4Visible;
+            set => SetProperty(ref _answer4Visible, value);
+        }
+
+        private bool _answer4IsEnabled;
+        public bool Answer4IsEnabled
+        {
+            get => _answer4IsEnabled;
+            set => SetProperty(ref _answer4IsEnabled, value);
+        }
+
+        private string _answer5;
+        public string Answer5
+        {
+            get => _answer5;
+            set => SetProperty(ref _answer5, value);
+        }
+
+        private int _answer5Value;
+        public int Answer5Value
+        {
+            get => _answer5Value;
+            set => SetProperty(ref _answer5Value, value);
+        }
+
+        private int _answer5Visible;
+        public int Answer5Visible
+        {
+            get => _answer5Visible;
+            set => SetProperty(ref _answer5Visible, value);
+        }
+
+        private bool _answer5IsEnabled;
+        public bool Answer5IsEnabled
+        {
+            get => _answer5IsEnabled;
+            set => SetProperty(ref _answer5IsEnabled, value);
+        }
+
+        private string _answer6;
+        public string Answer6
+        {
+            get => _answer6;
+            set => SetProperty(ref _answer6, value);
+        }
+
+        private int _answer6Value;
+        public int Answer6Value
+        {
+            get => _answer6Value;
+            set => SetProperty(ref _answer6Value, value);
+        }
+
+        private int _answer6Visible;
+        public int Answer6Visible
+        {
+            get => _answer6Visible;
+            set => SetProperty(ref _answer6Visible, value);
+        }
+
+        private bool _answer6IsEnabled;
+        public bool Answer6IsEnabled
+        {
+            get => _answer6IsEnabled;
+            set => SetProperty(ref _answer6IsEnabled, value);
+        }
+
+        private string _answer7;
+        public string Answer7
+        {
+            get => _answer7;
+            set => SetProperty(ref _answer7, value);
+        }
+
+        private int _answer7Value;
+        public int Answer7Value
+        {
+            get => _answer7Value;
+            set => SetProperty(ref _answer7Value, value);
+        }
+
+        private int _answer7Visible;
+        public int Answer7Visible
+        {
+            get => _answer7Visible;
+            set => SetProperty(ref _answer7Visible, value);
+        }
+
+        private bool _answer7IsEnabled;
+        public bool Answer7IsEnabled
+        {
+            get => _answer7IsEnabled;
+            set => SetProperty(ref _answer7IsEnabled, value);
+        }
+
+        private bool _nextQuestionIsEnabled;
+        public bool NextQuestionIsEnabled
+        {
+            get => _nextQuestionIsEnabled;
+            set => SetProperty(ref _nextQuestionIsEnabled, value);
+        }
+
+        private TeamMembersDataModel _selectedTeam1Member = new();
+        public TeamMembersDataModel SelectedTeam1Member
+        {
+            get => _selectedTeam1Member;
+            set => SetProperty(ref _selectedTeam1Member, value);
+        }
+
+        private TeamMembersDataModel _selectedTeam2Member = new();
+        public TeamMembersDataModel SelectedTeam2Member
+        {
+            get => _selectedTeam2Member;
+            set => SetProperty(ref _selectedTeam2Member, value);
         }
 
         #endregion
@@ -163,6 +402,12 @@ namespace FantasyFeudAdminConsole
         public DelegateCommand GetDataCommand => new(GetData);
         public DelegateCommand ProcessChangesCommand => new(ProcessChanges);
         public DelegateCommand<string> ShowAnswerCommand => new(ShowAnswer);
+        public DelegateCommand<string> AddTeamMemberCommand => new(AddTeamMember);
+        public DelegateCommand<string> RemoveTeamMemberCommand => new(RemoveTeamMember);
+        public DelegateCommand PostEventCommand => new(PostEvent);
+        public DelegateCommand<string> ChangeActiveMemberCommand => new(ChangeActiveMember);
+        public DelegateCommand<string> ReorderTeamMemberCommand => new(ReorderTeamMember);
+        public DelegateCommand<string> AwardTeamCommand => new(AwardTeam);
 
         #endregion
 
@@ -180,10 +425,20 @@ namespace FantasyFeudAdminConsole
 
         }
 
-        private void NextQuestion()
+        private async void NextQuestion()
         {
-            QuestionData = QuestionDataList.FirstOrDefault(_ => _.Id == ++QuestionData.Id);
-            QuestionId = QuestionData.Id;
+            QuestionsDataModel question = QuestionDataList.FirstOrDefault(_ => _.Id == QuestionData.Id + 1);
+            if (question is not null)
+            {
+                QuestionData = question;
+                AnswersData = new(await _dataProcessor.GetAnswersDataAsync(question.Id));
+                SetConsole();
+            }
+
+            if (QuestionDataList.FirstOrDefault(_ => _.Id == QuestionData.Id + 1) is null)
+            {
+                NextQuestionIsEnabled = false;
+            }
         }
 
         private async void GetData()
@@ -196,28 +451,269 @@ namespace FantasyFeudAdminConsole
             Team1Members = new(await _dataProcessor.GetTeamMembersDataAsync(Team1Data.Id));
             Team2Members = new(await _dataProcessor.GetTeamMembersDataAsync(Team2Data.Id));
             AnswersData = new(await _dataProcessor.GetAnswersDataAsync(QuestionData.Id));
+            NextQuestionIsEnabled = QuestionData is not null;
+            SetConsole();
         }
 
-        async void ProcessChanges()
+        private async void ProcessChanges()
         {
 
+        }
+
+        private async void AddTeamMember(string teamNumber)
+        {
+            var teamName = teamNumber == "1" ? Team1Name : Team2Name;
+            var name = await _dialogCoordinator.ShowInputAsync(this, "Insert Name", $"Insert new player for {teamName}");
+
+            TeamMembersDataModel newMember = new()
+            {
+                Id = Team1Members.Count + Team2Members.Count,
+                TeamId = Convert.ToInt32(teamNumber),
+                Name = name,
+                Active = 0
+            };
+
+            _ = await _dataProcessor.AddTeamMemberAsync(newMember);
+        }
+
+        private async void RemoveTeamMember(string teamNumber)
+        {
+
+        }
+
+        private async void PostEvent()
+        {
+
+        }
+
+        private async void ChangeActiveMember(string teamNumber)
+        {
+            if (Answer0 == null)
+            {
+                return;
+            }
+
+            if (teamNumber.Equals("1", StringComparison.Ordinal))
+            {
+                TeamMembersDataModel inactive = Team1Members.FirstOrDefault(_ => _.Active == 1);
+                inactive.Active = 0;
+                TeamMembersDataModel active = Team1Members.FirstOrDefault(_ => _.Id == SelectedTeam1Member.Id);
+                active.Active = 1;
+                _ = await _dataProcessor.ChangeActiveMemberAsync(inactive.Id, active.Id);
+                Debug.WriteLine($"{SelectedTeam1Member.Name} is now Active!");
+            }
+            else
+            {
+                TeamMembersDataModel inactive = Team2Members.FirstOrDefault(_ => _.Active == 1);
+                inactive.Active = 0;
+                TeamMembersDataModel active = Team2Members.FirstOrDefault(_ => _.Id == SelectedTeam2Member.Id);
+                active.Active = 1;
+                _ = await _dataProcessor.ChangeActiveMemberAsync(inactive.Id, active.Id);
+                Debug.WriteLine($"{SelectedTeam2Member.Name} is now Active!");
+            }
+        }
+
+        async void ReorderTeamMember(string teamNumber)
+        {
+            // Take SelectedTeamMember, then dialog new index => TeamMember.Name switch.
+        }
+
+        private async void AwardTeam(string teamNumber)
+        {
+
+        }
+
+        private void SetConsole()
+        {
+            GameId = GameData.Id;
+            QuestionId = QuestionData.Id;
+            Strikes = QuestionData.Strikes;
+            Question = QuestionData.Question;
+            Team1Name = Team1Data.TeamName;
+            Team1Score = GameData.Team1Score;
+            SelectedTeam1Member = Team1Members.FirstOrDefault(_ => _.Active == 1);
+            Team2Name = Team2Data.TeamName;
+            Team2Score = GameData.Team2Score;
+            SelectedTeam2Member = Team2Members.FirstOrDefault(_ => _.Active == 1);
+
+            for (var i = 0; i < 8; i++)
+            {
+                if (i == 0)
+                {
+                    if (i < AnswersData.Count)
+                    {
+                        Answer0 = AnswersData[i].Answer;
+                        Answer0Value = AnswersData[i].Value;
+                        Answer0Visible = AnswersData[i].Visible;
+                        Answer0IsEnabled = true;
+                    }
+                    else
+                    {
+                        Answer0 = "";
+                        Answer0Value = 0;
+                        Answer0Visible = 0;
+                        Answer0IsEnabled = false;
+                    }
+                }
+                else if (i == 1)
+                {
+                    if (i < AnswersData.Count)
+                    {
+                        Answer1 = AnswersData[i].Answer;
+                        Answer1Value = AnswersData[i].Value;
+                        Answer1Visible = AnswersData[i].Visible;
+                        Answer1IsEnabled = true;
+                    }
+                    else
+                    {
+                        Answer1 = "";
+                        Answer1Value = 0;
+                        Answer1Visible = 0;
+                        Answer1IsEnabled = false;
+                    }
+                }
+                else if (i == 2)
+                {
+                    if (i < AnswersData.Count)
+                    {
+                        Answer2 = AnswersData[i].Answer;
+                        Answer2Value = AnswersData[i].Value;
+                        Answer2Visible = AnswersData[i].Visible;
+                        Answer2IsEnabled = true;
+                    }
+                    else
+                    {
+                        Answer2 = "";
+                        Answer2Value = 0;
+                        Answer2Visible = 0;
+                        Answer2IsEnabled = false;
+                    }
+                }
+                else if (i == 3)
+                {
+                    if (i < AnswersData.Count)
+                    {
+                        Answer3 = AnswersData[i].Answer;
+                        Answer3Value = AnswersData[i].Value;
+                        Answer3Visible = AnswersData[i].Visible;
+                        Answer3IsEnabled = true;
+                    }
+                    else
+                    {
+                        Answer3 = "";
+                        Answer3Value = 0;
+                        Answer3Visible = 0;
+                        Answer3IsEnabled = false;
+                    }
+                }
+                else if (i == 4)
+                {
+                    if (i < AnswersData.Count)
+                    {
+                        Answer4 = AnswersData[i].Answer;
+                        Answer4Value = AnswersData[i].Value;
+                        Answer4Visible = AnswersData[i].Visible;
+                        Answer4IsEnabled = true;
+                    }
+                    else
+                    {
+                        Answer4 = "";
+                        Answer4Value = 0;
+                        Answer4Visible = 0;
+                        Answer4IsEnabled = false;
+                    }
+                }
+                else if (i == 5)
+                {
+                    if (i < AnswersData.Count)
+                    {
+                        Answer5 = AnswersData[i].Answer;
+                        Answer5Value = AnswersData[i].Value;
+                        Answer5Visible = AnswersData[i].Visible;
+                        Answer5IsEnabled = true;
+                    }
+                    else
+                    {
+                        Answer5 = "";
+                        Answer5Value = 0;
+                        Answer5Visible = 0;
+                        Answer5IsEnabled = false;
+                    }
+                }
+                else if (i == 6)
+                {
+                    if (i < AnswersData.Count)
+                    {
+                        Answer6 = AnswersData[i].Answer;
+                        Answer6Value = AnswersData[i].Value;
+                        Answer6Visible = AnswersData[i].Visible;
+                        Answer6IsEnabled = true;
+                    }
+                    else
+                    {
+                        Answer6 = "";
+                        Answer6Value = 0;
+                        Answer6Visible = 0;
+                        Answer6IsEnabled = false;
+                    }
+                }
+                else if (i == 7)
+                {
+                    if (i < AnswersData.Count)
+                    {
+                        Answer7 = AnswersData[i].Answer;
+                        Answer7Value = AnswersData[i].Value;
+                        Answer7Visible = AnswersData[i].Visible;
+                        Answer7IsEnabled = true;
+                    }
+                    else
+                    {
+                        Answer7 = "";
+                        Answer7Value = 0;
+                        Answer7Visible = 0;
+                        Answer7IsEnabled = false;
+                    }
+                }
+            }
         }
 
         private async void ShowAnswer(string index)
         {
             var answerIndex = Convert.ToInt16(index);
 
-            var model = AnswersData.FirstOrDefault(_ => _.Id == answerIndex);
+            AnswersDataModel model = AnswersData.FirstOrDefault(_ => _.Id == answerIndex);
             model.Visible = model.Visible == 1 ? 0 : 1;
-            await _dataProcessor.ShowAnswerAsync(model);
             switch (index)
             {
                 case "0":
                     Answer0Visible = model.Visible;
                     break;
+                case "1":
+                    Answer1Visible = model.Visible;
+                    break;
+                case "2":
+                    Answer2Visible = model.Visible;
+                    break;
+                case "3":
+                    Answer3Visible = model.Visible;
+                    break;
+                case "4":
+                    Answer4Visible = model.Visible;
+                    break;
+                case "5":
+                    Answer5Visible = model.Visible;
+                    break;
+                case "6":
+                    Answer6Visible = model.Visible;
+                    break;
+                case "7":
+                    Answer7Visible = model.Visible;
+                    break;
                 default:
                     break;
             }
+
+            _ = await _dataProcessor.ShowAnswerAsync(model);
         }
     }
 }
