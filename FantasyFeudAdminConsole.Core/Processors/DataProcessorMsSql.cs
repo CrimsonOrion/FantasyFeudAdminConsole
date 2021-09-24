@@ -174,5 +174,10 @@ namespace FantasyFeudAdminConsole.Core.Processors
             var result = await _sqlDataAccess.PutDataAsync("spGames_UpdateScoresById", param, true);
             return result;
         }
+
+        public Task<bool> UpdateAllDataAsync(TeamsDataModel team1, TeamsDataModel team2, GamesDataModel games, List<TeamMembersDataModel> team1Members, List<TeamMembersDataModel> team2Members, QuestionsDataModel questions, List<AnswersDataModel> answers)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

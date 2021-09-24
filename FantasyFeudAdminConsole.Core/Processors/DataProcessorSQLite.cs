@@ -7,8 +7,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace FantasyFeudAdminConsole.Core.Processors
 {
@@ -35,8 +35,8 @@ namespace FantasyFeudAdminConsole.Core.Processors
         public async Task<int> AddTeamMemberAsync(TeamMembersDataModel model)
         {
             var query = $"" +
-                $"INSERT INTO TeamMembers VALUES " +
-                $"({model.Id}, {model.TeamId}, '{model.Name}', {model.Active});";
+                $"INSERT INTO TeamMembers (TeamId, Name, Active) VALUES " +
+                $"({model.TeamId}, '{model.Name.EscapeName()}', {model.Active});";
 
             var result = await _sqliteDataAccess.PostDataAsync(query);
             return result;
@@ -72,7 +72,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
         {
             var query = $"" +
                 $"UPDATE Teams " +
-                $"SET TeamName = {model.TeamName} " +
+                $"SET TeamName = {model.TeamName.EscapeName()} " +
                 $"WHERE Id = {model.Id};";
 
             var result = await _sqliteDataAccess.PutDataAsync(query);
@@ -92,7 +92,6 @@ namespace FantasyFeudAdminConsole.Core.Processors
 
         public async Task<IEnumerable<AnswersDataModel>> GetAnswersDataAsync(int questionId)
         {
-            //TODO: Fix this!!!
             var query = "" +
                 "SELECT Id, QuestionId, Rank, Answer, Value, Visible " +
                 "FROM Answers " +
@@ -151,7 +150,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
         public async Task<IEnumerable<TeamMembersDataModel>> GetTeamMembersDataAsync(int teamId)
         {
             var query = "" +
-                "SELECT SELECT Id, TeamId, Name, Active " +
+                "SELECT Id, TeamId, Name, Active " +
                 "FROM TeamMembers " +
                 $"WHERE TeamId = {teamId} AND Name NOT LIKE '';";
 
@@ -180,77 +179,132 @@ namespace FantasyFeudAdminConsole.Core.Processors
             return result;
         }
 
+        public async Task<bool> UpdateAllDataAsync(TeamsDataModel team1, TeamsDataModel team2, GamesDataModel games, List<TeamMembersDataModel> team1Members, List<TeamMembersDataModel> team2Members, QuestionsDataModel questions, List<AnswersDataModel> answers)
+        {
+            StringBuilder queryBuilder = new();
+            queryBuilder.AppendLine($"" +
+                $"UPDATE Teams " +
+                $"SET TeamName = '{team1.TeamName.EscapeName()}' " +
+                $"WHERE Id = {team1.Id};")
+                .AppendLine($"" +
+                $"UPDATE Teams " +
+                $"SET TeamName = '{team2.TeamName.EscapeName()}' " +
+                $"WHERE Id = {team2.Id};")
+                .AppendLine($"" +
+                $"UPDATE Games " +
+                $"SET Team1Id = {games.Team1Id}, Team1Score = {games.Team1Score}, Team2Id = {games.Team2Id}, Team2Score = {games.Team2Score} " +
+                $"WHERE Id = {games.Id};")
+                .AppendLine($"" +
+                $"DELETE FROM TeamMembers;")
+                .AppendLine($"" +
+                $"INSERT INTO TeamMembers (TeamId, Name, Active) VALUES ");
+
+            foreach (TeamMembersDataModel member in team1Members)
+            {
+                queryBuilder.Append($"({member.TeamId},'{member.Name.EscapeName()}',{member.Active}),");
+            }
+
+            foreach (TeamMembersDataModel member in team2Members)
+            {
+                queryBuilder.Append($"({member.TeamId},'{member.Name.EscapeName()}',{member.Active}),");
+            }
+            queryBuilder.Remove(queryBuilder.Length - 1, 1).Append(';')
+
+                .AppendLine($"" +
+                $"UPDATE Questions " +
+                $"SET Strikes = {questions.Strikes} " +
+                $"WHERE Id = {questions.Id};");
+
+            foreach (AnswersDataModel answer in answers)
+            {
+                queryBuilder.AppendLine($"" +
+                    $"UPDATE Answers " +
+                    $"SET Visible = {answer.Visible} " +
+                    $"WHERE Id = {answer.Id};");
+            }
+
+            try
+            {
+                _ = await _sqliteDataAccess.PutDataAsync(queryBuilder.ToString());
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         private async Task<int> CreateDatabase()
         {
             if (!File.Exists(GlobalConfig.DatabaseSettings.DataSource))
             {
                 try
                 {
-                    var query = "" +
+                    StringBuilder queryBuilder = new();
+                    queryBuilder.AppendLine("" +
                         "CREATE TABLE Teams ( " +
                         "   Id INTEGER NOT NULL PRIMARY KEY," +
-                        "   TeamName TEXT NOT NULL); " +
-                        "" +
+                        "   TeamName TEXT NOT NULL);")
+                        .AppendLine("" +
                         "CREATE TABLE Games( " +
                         "   Id INTEGER NOT NULL PRIMARY KEY, " +
                         "   Team1Id INTEGER NOT NULL REFERENCES Teams, " +
                         "   Team1Score INTEGER NOT NULL DEFAULT 0, " +
                         "   Team2Id INTEGER NOT NULL REFERENCES Teams, " +
-                        "   Team2Score INTEGER NOT NULL DEFAULT 0); " +
-                        "" +
+                        "   Team2Score INTEGER NOT NULL DEFAULT 0);")
+                        .AppendLine("" +
                         "CREATE TABLE TeamMembers( " +
-                        "   Id INTEGER NOT NULL PRIMARY KEY, " +
+                        "   Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
                         "   TeamId INTEGER NOT NULL REFERENCES Teams, " +
                         "   Name TEXT NOT NULL, " +
-                        "   Active INTEGER NOT NULL DEFAULT 0); " +
-                        "" +
+                        "   Active INTEGER NOT NULL DEFAULT 0);")
+                        .AppendLine("" +
                         "CREATE TABLE Questions( " +
                         "   Id INTEGER NOT NULL PRIMARY KEY, " +
                         "   GameId INTEGER NOT NULL REFERENCES Games, " +
                         "   Question TEXT NOT NULL, " +
                         "   Responses INTEGER NOT NULL DEFAULT 0, " +
-                        "   Strikes INTEGER NOT NULL DEFAULT 0); " +
-                        "" +
+                        "   Strikes INTEGER NOT NULL DEFAULT 0);")
+                        .AppendLine("" +
                         "CREATE TABLE Answers( " +
                         "   Id INTEGER NOT NULL PRIMARY KEY, " +
                         "   QuestionId INTEGER NOT NULL REFERENCES Questions, " +
                         "   Rank INTEGER NOT NULL, " +
                         "   Answer TEXT NOT NULL, " +
                         "   Value INTEGER NOT NULL DEFAULT 0, " +
-                        "   Visible INTEGER NOT NULL DEFAULT 0); " +
-                        "" +
+                        "   Visible INTEGER NOT NULL DEFAULT 0);")
+                        .AppendLine("" +
                         "INSERT INTO Teams VALUES " +
                         "   (0, 'Scions'), " +
-                        "   (1, 'Garleans'); " +
-                        "" +
-                        "INSERT INTO TeamMembers VALUES " +
-                        "   (0, 0, 'Thancred', 1), " +
-                        "   (1, 0, 'Y''shtola', 0), " +
-                        "   (2, 0, 'Gra''ha', 0), " +
-                        "   (3, 1, 'Zenos', 1), " +
-                        "   (4, 1, 'Fandaniel', 0), " +
-                        "   (5, 1, 'Voidsent', 0); " +
-                        "" +
+                        "   (1, 'Garleans');")
+                        .AppendLine("" +
+                        "INSERT INTO TeamMembers (TeamId, Name, Active) VALUES " +
+                        "   (0, 'Thancred', 1), " +
+                        "   (0, 'Y''shtola', 0), " +
+                        "   (0, 'Gra''ha', 0), " +
+                        "   (1, 'Zenos', 1), " +
+                        "   (1, 'Fandaniel', 0), " +
+                        "   (1, 'Voidsent', 0);")
+                        .AppendLine("" +
                         "INSERT INTO Games VALUES " +
-                        "   (0, 0, 0, 1, 0); " +
-                        "" +
+                        "   (0, 0, 0, 1, 0);")
+                        .AppendLine("" +
                         "INSERT INTO Questions VALUES " +
-                        "   (0, 0, 'Who''s Ready For Fantasy Feud?', 6, 0); " +
-                        "" +
+                        "   (0, 0, 'Who''s Ready For Fantasy Feud?', 6, 0);")
+                        .AppendLine("" +
                         "INSERT INTO Answers VALUES " +
                         "   (0, 0, 1, 'Me', 25, 0), " +
                         "   (1, 0, 2, 'You', 15, 0), " +
                         "   (2, 0, 3, 'Them', 10, 0), " +
                         "   (3, 0, 4, 'Us', 8, 0), " +
                         "   (4, 0, 5, 'Lalas', 4, 0), " +
-                        "   (5, 0, 6, 'No One', 0, 0);";
-
-                    var output = await _sqliteDataAccess.PostDataAsync(query);
-                    Debug.WriteLine(output);
+                        "   (5, 0, 6, 'No One', 0, 0);");
+                    var output = await _sqliteDataAccess.PostDataAsync(queryBuilder.ToString());
+                    Debug.WriteLine($"DB Creation successful with Code: {output}");
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Error Creating DB");
+                    Debug.WriteLine($"Error Creating DB: {ex.Message}");
                 }
             }
 
@@ -258,71 +312,3 @@ namespace FantasyFeudAdminConsole.Core.Processors
         }
     }
 }
-
-/*
-Creation of the database (with example data):
-  
-CREATE TABLE Teams (
-	Id INTEGER NOT NULL PRIMARY KEY,
-	TeamName TEXT NOT NULL
-);
-
-CREATE TABLE Games (
-	Id INTEGER NOT NULL PRIMARY KEY,
-	Team1Id INTEGER NOT NULL REFERENCES Teams,
-	Team1Score INTEGER NOT NULL DEFAULT 0,
-	Team2Id INTEGER NOT NULL REFERENCES Teams,
-	Team2Score INTEGER NOT NULL DEFAULT 0
-);
-
-CREATE TABLE TeamMembers (
-	Id INTEGER NOT NULL PRIMARY KEY,
-	TeamId INTEGER NOT NULL REFERENCES Teams,
-	Name TEXT NOT NULL,
-	Active INTEGER NOT NULL DEFAULT 0
-);
-
-CREATE TABLE Questions (
-	Id INTEGER NOT NULL PRIMARY KEY,
-	GameId INTEGER NOT NULL REFERENCES Games,
-	Question TEXT NOT NULL,
-	Responses INTEGER NOT NULL DEFAULT 0,
-	Strikes INTEGER NOT NULL DEFAULT 0
-);
-
-CREATE TABLE Answers (
-	Id INTEGER NOT NULL PRIMARY KEY,
-	QuestionId INTEGER NOT NULL REFERENCES Questions,
-	Rank INTEGER NOT NULL,
-	Answer TEXT NOT NULL,
-	Value INTEGER NOT NULL DEFAULT 0,
-	Visible INTEGER NOT NULL DEFAULT 0
-);
-
-
-INSERT INTO Teams VALUES 
-(0, 'Scions'),
-(1, 'Garleans');
-
-INSERT INTO TeamMembers VALUES 
-(0, 0, 'Thancred', 1),
-(1, 0, 'Y''shtola', 0),
-(2, 0, 'Gra''ha', 0),
-(3, 1, 'Zenos', 1),
-(4, 1, 'Fandaniel', 0),
-(5, 1, 'Voidsent', 0);
-
-INSERT INTO Games VALUES
-(0, 0, 0, 1, 0);
-
-INSERT INTO Questions VALUES
-(0, 0, 'Who''s Ready For Fantasy Feud?', 6, 0);
-
-INSERT INTO Answers VALUES
-(0, 0, 1, 'Me', 25, 0),
-(1, 0, 2, 'You', 15, 0),
-(2, 0, 3, 'Them', 10, 0),
-(3, 0, 4, 'Us', 8, 0),
-(4, 0, 5, 'Lalas', 4, 0),
-(5, 0, 6, 'No One', 0, 0);
-*/

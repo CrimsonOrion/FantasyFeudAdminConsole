@@ -21,5 +21,6 @@ namespace FantasyFeudAdminConsole.Core.Processors
         Task<IEnumerable<TeamMembersDataModel>> GetTeamMembersDataAsync(int teamId);
         Task<int> RemoveTeamMemberAsync(int teamMemberId);
         Task<int> ShowAnswerAsync(AnswersDataModel answer);
+        Task<bool> UpdateAllDataAsync(TeamsDataModel team1, TeamsDataModel team2, GamesDataModel games, List<TeamMembersDataModel> team1Members, List<TeamMembersDataModel> team2Members, QuestionsDataModel questions, List<AnswersDataModel> answers);
     }
 }

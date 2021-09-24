@@ -411,6 +411,8 @@ namespace FantasyFeudAdminConsole
 
         #endregion
 
+        #region ctor
+
         public MainWindowViewModel(IEventAggregator eventAggregator, IDialogCoordinator dialogCoordinator, IRegionManager regionManager, IDataProcessor dataProcessor, IWebProcessor webProcessor)
         {
             _eventAggregator = eventAggregator;
@@ -420,9 +422,20 @@ namespace FantasyFeudAdminConsole
             _webProcessor = webProcessor;
         }
 
+        #endregion
+
+        #region Methods
+
         private async void AddStrike()
         {
+            Strikes = Strikes switch
+            {
+                < 4 => ++Strikes,
+                _ => 0,
+            };
+            QuestionData.Strikes = Strikes;
 
+            _ = await _dataProcessor.AddStrikeAsync(QuestionData);
         }
 
         private async void NextQuestion()
@@ -457,7 +470,22 @@ namespace FantasyFeudAdminConsole
 
         private async void ProcessChanges()
         {
+            // In the event there's a manual change
+            Team1Data.TeamName = Team1Name;
+            GameData.Team1Score = Team1Score;
+            Team2Data.TeamName = Team2Name;
+            GameData.Team2Score = Team2Score;
 
+            var success = await _dataProcessor.UpdateAllDataAsync(Team1Data, Team2Data, GameData, Team1Members, Team2Members, QuestionData, AnswersData);
+
+            if (success)
+            {
+                await _dialogCoordinator.ShowMessageAsync(this, "Success!", "Data sync'd successfully.");
+            }
+            else
+            {
+                await _dialogCoordinator.ShowMessageAsync(this, "Failure!", "Data NOT sync'd successfully.");
+            }
         }
 
         private async void AddTeamMember(string teamNumber)
@@ -467,17 +495,45 @@ namespace FantasyFeudAdminConsole
 
             TeamMembersDataModel newMember = new()
             {
-                Id = Team1Members.Count + Team2Members.Count,
-                TeamId = Convert.ToInt32(teamNumber),
+                TeamId = teamNumber == "1" ? Team1Data.Id : Team2Data.Id,
                 Name = name,
                 Active = 0
             };
 
             _ = await _dataProcessor.AddTeamMemberAsync(newMember);
+
+            if (teamNumber == "1")
+            {
+                Team1Members.Add(newMember);
+                Team1Members = new(Team1Members);
+            }
+            else
+            {
+                Team2Members.Add(newMember);
+                Team2Members = new(Team2Members);
+            }
         }
 
         private async void RemoveTeamMember(string teamNumber)
         {
+            TeamMembersDataModel member = new();
+
+            if (teamNumber == "1")
+            {
+                member = SelectedTeam1Member;
+                SelectedTeam1Member = new();
+                Team1Members.Remove(member);
+                Team1Members = new(Team1Members);
+            }
+            else
+            {
+                member = SelectedTeam2Member;
+                SelectedTeam2Member = new();
+                Team2Members.Remove(member);
+                Team2Members = new(Team2Members);
+            }
+
+            _ = await _dataProcessor.RemoveTeamMemberAsync(member.Id);
 
         }
 
@@ -493,27 +549,27 @@ namespace FantasyFeudAdminConsole
                 return;
             }
 
-            if (teamNumber.Equals("1", StringComparison.Ordinal))
+            if (teamNumber == "1" && SelectedTeam1Member is not null)
             {
-                TeamMembersDataModel inactive = Team1Members.FirstOrDefault(_ => _.Active == 1);
+                TeamMembersDataModel inactive = Team1Members.FirstOrDefault(_ => _.Active == 1) ?? new() { Id = 0 };
                 inactive.Active = 0;
-                TeamMembersDataModel active = Team1Members.FirstOrDefault(_ => _.Id == SelectedTeam1Member.Id);
+                TeamMembersDataModel active = Team1Members.FirstOrDefault(_ => _.Id == SelectedTeam1Member.Id) ?? new() { Id = 0 };
                 active.Active = 1;
                 _ = await _dataProcessor.ChangeActiveMemberAsync(inactive.Id, active.Id);
                 Debug.WriteLine($"{SelectedTeam1Member.Name} is now Active!");
             }
-            else
+            else if (SelectedTeam2Member is not null)
             {
-                TeamMembersDataModel inactive = Team2Members.FirstOrDefault(_ => _.Active == 1);
+                TeamMembersDataModel inactive = Team2Members.FirstOrDefault(_ => _.Active == 1) ?? new() { Id = 0 };
                 inactive.Active = 0;
-                TeamMembersDataModel active = Team2Members.FirstOrDefault(_ => _.Id == SelectedTeam2Member.Id);
+                TeamMembersDataModel active = Team2Members.FirstOrDefault(_ => _.Id == SelectedTeam2Member.Id) ?? new() { Id = 0 };
                 active.Active = 1;
                 _ = await _dataProcessor.ChangeActiveMemberAsync(inactive.Id, active.Id);
                 Debug.WriteLine($"{SelectedTeam2Member.Name} is now Active!");
             }
         }
 
-        async void ReorderTeamMember(string teamNumber)
+        private async void ReorderTeamMember(string teamNumber)
         {
             // Take SelectedTeamMember, then dialog new index => TeamMember.Name switch.
         }
@@ -715,5 +771,7 @@ namespace FantasyFeudAdminConsole
 
             _ = await _dataProcessor.ShowAnswerAsync(model);
         }
+
+        #endregion
     }
 }

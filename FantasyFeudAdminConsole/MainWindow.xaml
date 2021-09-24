@@ -294,7 +294,7 @@
             Grid.Column="4"
             Margin="5"
             DisplayMemberPath="Name"
-            ItemsSource="{Binding Team1Members}"
+            ItemsSource="{Binding Team1Members, UpdateSourceTrigger=PropertyChanged}"
             ScrollViewer.HorizontalScrollBarVisibility="Auto"
             SelectedItem="{Binding SelectedTeam1Member}">
             <i:Interaction.Triggers>
