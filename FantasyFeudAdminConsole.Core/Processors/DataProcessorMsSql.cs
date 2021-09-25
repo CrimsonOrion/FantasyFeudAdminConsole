@@ -175,7 +175,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
             return result;
         }
 
-        public Task<bool> UpdateAllDataAsync(TeamsDataModel team1, TeamsDataModel team2, GamesDataModel games, List<TeamMembersDataModel> team1Members, List<TeamMembersDataModel> team2Members, QuestionsDataModel questions, List<AnswersDataModel> answers)
+        public Task<bool> UpdateAllDataAsync(TeamsDataModel team1, TeamsDataModel team2, GamesDataModel games, IEnumerable<TeamMembersDataModel> team1Members, IEnumerable<TeamMembersDataModel> team2Members, QuestionsDataModel questions, IEnumerable<AnswersDataModel> answers)
         {
             throw new System.NotImplementedException();
         }

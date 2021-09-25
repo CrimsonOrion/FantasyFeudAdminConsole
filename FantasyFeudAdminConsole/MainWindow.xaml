@@ -89,7 +89,8 @@
             Grid.Column="4"
             Margin="5"
             Command="{Binding AddStrikeCommand}"
-            Content="Add Strike [X]" />
+            Content="Add Strike [X]"
+            IsEnabled="{Binding StrikeIsEnabled}" />
 
         <Button x:Name="NextQuestionButton"
             Grid.Row="1"

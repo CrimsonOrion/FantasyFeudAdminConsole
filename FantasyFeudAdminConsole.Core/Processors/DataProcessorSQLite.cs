@@ -179,7 +179,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
             return result;
         }
 
-        public async Task<bool> UpdateAllDataAsync(TeamsDataModel team1, TeamsDataModel team2, GamesDataModel games, List<TeamMembersDataModel> team1Members, List<TeamMembersDataModel> team2Members, QuestionsDataModel questions, List<AnswersDataModel> answers)
+        public async Task<bool> UpdateAllDataAsync(TeamsDataModel team1, TeamsDataModel team2, GamesDataModel games, IEnumerable<TeamMembersDataModel> team1Members, IEnumerable<TeamMembersDataModel> team2Members, QuestionsDataModel questions, IEnumerable<AnswersDataModel> answers)
         {
             StringBuilder queryBuilder = new();
             queryBuilder.AppendLine($"" +

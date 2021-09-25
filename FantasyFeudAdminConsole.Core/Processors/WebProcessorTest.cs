@@ -45,7 +45,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
             return message;
         }
 
-        public async Task PostEventAsync(QuestionModel questionModel)
+        public async Task<string> PostEventAsync(QuestionModel questionModel)
         {
             var res = "";
             try
@@ -60,21 +60,16 @@ namespace FantasyFeudAdminConsole.Core.Processors
 
                 httpResMessage = await httpClient.PostAsync(_eventServerUri, httpContent);
 
-                if (httpResMessage.StatusCode == HttpStatusCode.OK)
-                {
-                    res = httpResMessage.Content.ReadAsStringAsync().Result;
-                }
-                else
-                {
-                    res = "Some error occured. " + httpResMessage.StatusCode;
-                }
+                res = httpResMessage.StatusCode == HttpStatusCode.OK
+                    ? httpResMessage.Content.ReadAsStringAsync().Result
+                    : "Some error occured. " + httpResMessage.StatusCode;
+
+                return res;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                return $"{res}\r\n{ex.Message}";
             }
-
-            Debug.WriteLine(res);
         }
     }
 }

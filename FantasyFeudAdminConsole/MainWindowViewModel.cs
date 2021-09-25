@@ -5,12 +5,11 @@ using FantasyFeudAdminConsole.Core.Processors;
 using MahApps.Metro.Controls.Dialogs;
 
 using Prism.Commands;
-using Prism.Events;
 using Prism.Mvvm;
-using Prism.Regions;
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 
@@ -18,13 +17,13 @@ namespace FantasyFeudAdminConsole
 {
     public class MainWindowViewModel : BindableBase
     {
-        private readonly IEventAggregator _eventAggregator;
+        #region Private fields
+
         private readonly IDialogCoordinator _dialogCoordinator;
-        private readonly IRegionManager _regionManager;
         private readonly IDataProcessor _dataProcessor;
         private readonly IWebProcessor _webProcessor;
 
-        public static string Title => "Fantasy Feud Admin Console";
+        #endregion
 
         #region Properties
 
@@ -65,15 +64,15 @@ namespace FantasyFeudAdminConsole
             set => SetProperty(ref _team2Data, value);
         }
 
-        private List<TeamMembersDataModel> _team1Members = new();
-        public List<TeamMembersDataModel> Team1Members
+        private ObservableCollection<TeamMembersDataModel> _team1Members = new();
+        public ObservableCollection<TeamMembersDataModel> Team1Members
         {
             get => _team1Members;
             set => SetProperty(ref _team1Members, value);
         }
 
-        private List<TeamMembersDataModel> _team2Members = new();
-        public List<TeamMembersDataModel> Team2Members
+        private ObservableCollection<TeamMembersDataModel> _team2Members = new();
+        public ObservableCollection<TeamMembersDataModel> Team2Members
         {
             get => _team2Members;
             set => SetProperty(ref _team2Members, value);
@@ -89,6 +88,8 @@ namespace FantasyFeudAdminConsole
         #endregion
 
         #region UI Data
+
+        public static string Title => "Fantasy Feud Admin Console";
 
         private int _gameId;
         public int GameId
@@ -377,6 +378,13 @@ namespace FantasyFeudAdminConsole
             set => SetProperty(ref _nextQuestionIsEnabled, value);
         }
 
+        private bool _strikeIsEnabled;
+        public bool StrikeIsEnabled
+        {
+            get => _strikeIsEnabled;
+            set => SetProperty(ref _strikeIsEnabled, value);
+        }
+
         private TeamMembersDataModel _selectedTeam1Member = new();
         public TeamMembersDataModel SelectedTeam1Member
         {
@@ -413,11 +421,9 @@ namespace FantasyFeudAdminConsole
 
         #region ctor
 
-        public MainWindowViewModel(IEventAggregator eventAggregator, IDialogCoordinator dialogCoordinator, IRegionManager regionManager, IDataProcessor dataProcessor, IWebProcessor webProcessor)
+        public MainWindowViewModel(IDialogCoordinator dialogCoordinator, IDataProcessor dataProcessor, IWebProcessor webProcessor)
         {
-            _eventAggregator = eventAggregator;
             _dialogCoordinator = dialogCoordinator;
-            _regionManager = regionManager;
             _dataProcessor = dataProcessor;
             _webProcessor = webProcessor;
         }
@@ -465,6 +471,7 @@ namespace FantasyFeudAdminConsole
             Team2Members = new(await _dataProcessor.GetTeamMembersDataAsync(Team2Data.Id));
             AnswersData = new(await _dataProcessor.GetAnswersDataAsync(QuestionData.Id));
             NextQuestionIsEnabled = QuestionData is not null;
+            StrikeIsEnabled = QuestionData is not null;
             SetConsole();
         }
 
@@ -480,11 +487,11 @@ namespace FantasyFeudAdminConsole
 
             if (success)
             {
-                await _dialogCoordinator.ShowMessageAsync(this, "Success!", "Data sync'd successfully.");
+                _ = await _dialogCoordinator.ShowMessageAsync(this, "Success!", "Data sync'd successfully.");
             }
             else
             {
-                await _dialogCoordinator.ShowMessageAsync(this, "Failure!", "Data NOT sync'd successfully.");
+                _ = await _dialogCoordinator.ShowMessageAsync(this, "Failure!", "Data NOT sync'd successfully.");
             }
         }
 
@@ -505,12 +512,10 @@ namespace FantasyFeudAdminConsole
             if (teamNumber == "1")
             {
                 Team1Members.Add(newMember);
-                Team1Members = new(Team1Members);
             }
             else
             {
                 Team2Members.Add(newMember);
-                Team2Members = new(Team2Members);
             }
         }
 
@@ -520,17 +525,11 @@ namespace FantasyFeudAdminConsole
 
             if (teamNumber == "1")
             {
-                member = SelectedTeam1Member;
-                SelectedTeam1Member = new();
-                Team1Members.Remove(member);
-                Team1Members = new(Team1Members);
+                _ = Team1Members.Remove(SelectedTeam1Member);
             }
             else
             {
-                member = SelectedTeam2Member;
-                SelectedTeam2Member = new();
-                Team2Members.Remove(member);
-                Team2Members = new(Team2Members);
+                _ = Team2Members.Remove(SelectedTeam2Member);
             }
 
             _ = await _dataProcessor.RemoveTeamMemberAsync(member.Id);
@@ -539,7 +538,11 @@ namespace FantasyFeudAdminConsole
 
         private async void PostEvent()
         {
-
+            List<TeamMembersDataModel> teamMembersData = new();
+            teamMembersData.AddRange(Team1Members);
+            teamMembersData.AddRange(Team2Members);
+            QuestionModel model = _webProcessor.CreateEventMessage(GameData, new List<TeamsDataModel>() { Team1Data, Team2Data }, teamMembersData, QuestionData, AnswersData);
+            Debug.WriteLine(await _webProcessor.PostEventAsync(model));
         }
 
         private async void ChangeActiveMember(string teamNumber)
@@ -569,14 +572,35 @@ namespace FantasyFeudAdminConsole
             }
         }
 
-        private async void ReorderTeamMember(string teamNumber)
+        private void ReorderTeamMember(string teamNumber)
         {
-            // Take SelectedTeamMember, then dialog new index => TeamMember.Name switch.
+            if (teamNumber == "1")
+            {
+                var selectedIndex = Team1Members.IndexOf(SelectedTeam1Member);
+                Team1Members.Move(selectedIndex, selectedIndex == 0 ? Team1Members.Count - 1 : selectedIndex - 1);
+            }
+            else
+            {
+                var selectedIndex = Team2Members.IndexOf(SelectedTeam2Member);
+                Team2Members.Move(selectedIndex, selectedIndex == 0 ? Team2Members.Count - 1 : selectedIndex - 1);
+            }
         }
 
         private async void AwardTeam(string teamNumber)
         {
+            var points = AnswersData.Where(_ => _.Visible == 1).Sum(_ => _.Value);
+            if (teamNumber == "1")
+            {
+                GameData.Team1Score += points;
+                Team1Score = GameData.Team1Score;
+            }
+            else
+            {
+                GameData.Team2Score += points;
+                Team2Score = GameData.Team2Score;
+            }
 
+            _ = await _dataProcessor.AwardPointsAsync(GameData.Id, Convert.ToInt32(teamNumber), teamNumber == "1" ? GameData.Team1Score : GameData.Team2Score);
         }
 
         private void SetConsole()
