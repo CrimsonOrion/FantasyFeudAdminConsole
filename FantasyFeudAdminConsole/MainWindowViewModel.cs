@@ -7,7 +7,6 @@ using MahApps.Metro.Controls.Dialogs;
 using Prism.Commands;
 using Prism.Mvvm;
 
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -409,13 +408,13 @@ namespace FantasyFeudAdminConsole
         public DelegateCommand NextQuestionCommand => new(NextQuestion);
         public DelegateCommand GetDataCommand => new(GetData);
         public DelegateCommand ProcessChangesCommand => new(ProcessChanges);
-        public DelegateCommand<string> ShowAnswerCommand => new(ShowAnswer);
-        public DelegateCommand<string> AddTeamMemberCommand => new(AddTeamMember);
-        public DelegateCommand<string> RemoveTeamMemberCommand => new(RemoveTeamMember);
+        public DelegateCommand<int?> ShowAnswerCommand => new(ShowAnswer);
+        public DelegateCommand<int?> AddTeamMemberCommand => new(AddTeamMember);
+        public DelegateCommand<int?> RemoveTeamMemberCommand => new(RemoveTeamMember);
         public DelegateCommand PostEventCommand => new(PostEvent);
-        public DelegateCommand<string> ChangeActiveMemberCommand => new(ChangeActiveMember);
-        public DelegateCommand<string> ReorderTeamMemberCommand => new(ReorderTeamMember);
-        public DelegateCommand<string> AwardTeamCommand => new(AwardTeam);
+        public DelegateCommand<int?> ChangeActiveMemberCommand => new(ChangeActiveMember);
+        public DelegateCommand<int?> ReorderTeamMemberCommand => new(ReorderTeamMember);
+        public DelegateCommand<int?> AwardTeamCommand => new(AwardTeam);
 
         #endregion
 
@@ -485,31 +484,26 @@ namespace FantasyFeudAdminConsole
 
             var success = await _dataProcessor.UpdateAllDataAsync(Team1Data, Team2Data, GameData, Team1Members, Team2Members, QuestionData, AnswersData);
 
-            if (success)
-            {
-                _ = await _dialogCoordinator.ShowMessageAsync(this, "Success!", "Data sync'd successfully.");
-            }
-            else
-            {
-                _ = await _dialogCoordinator.ShowMessageAsync(this, "Failure!", "Data NOT sync'd successfully.");
-            }
+            _ = success
+                ? await _dialogCoordinator.ShowMessageAsync(this, "Success!", "Data sync'd successfully.")
+                : await _dialogCoordinator.ShowMessageAsync(this, "Failure!", "Data NOT sync'd successfully.");
         }
 
-        private async void AddTeamMember(string teamNumber)
+        private async void AddTeamMember(int? teamNumber)
         {
-            var teamName = teamNumber == "1" ? Team1Name : Team2Name;
+            var teamName = teamNumber == 1 ? Team1Name : Team2Name;
             var name = await _dialogCoordinator.ShowInputAsync(this, "Insert Name", $"Insert new player for {teamName}");
 
             TeamMembersDataModel newMember = new()
             {
-                TeamId = teamNumber == "1" ? Team1Data.Id : Team2Data.Id,
+                TeamId = teamNumber == 1 ? Team1Data.Id : Team2Data.Id,
                 Name = name,
                 Active = 0
             };
 
             _ = await _dataProcessor.AddTeamMemberAsync(newMember);
 
-            if (teamNumber == "1")
+            if (teamNumber == 1)
             {
                 Team1Members.Add(newMember);
             }
@@ -519,18 +513,11 @@ namespace FantasyFeudAdminConsole
             }
         }
 
-        private async void RemoveTeamMember(string teamNumber)
+        private async void RemoveTeamMember(int? teamNumber)
         {
             TeamMembersDataModel member = new();
 
-            if (teamNumber == "1")
-            {
-                _ = Team1Members.Remove(SelectedTeam1Member);
-            }
-            else
-            {
-                _ = Team2Members.Remove(SelectedTeam2Member);
-            }
+            _ = teamNumber == 1 ? Team1Members.Remove(SelectedTeam1Member) : Team2Members.Remove(SelectedTeam2Member);
 
             _ = await _dataProcessor.RemoveTeamMemberAsync(member.Id);
 
@@ -545,14 +532,14 @@ namespace FantasyFeudAdminConsole
             Debug.WriteLine(await _webProcessor.PostEventAsync(model));
         }
 
-        private async void ChangeActiveMember(string teamNumber)
+        private async void ChangeActiveMember(int? teamNumber)
         {
             if (Answer0 == null)
             {
                 return;
             }
 
-            if (teamNumber == "1" && SelectedTeam1Member is not null)
+            if (teamNumber == 1 && SelectedTeam1Member is not null)
             {
                 TeamMembersDataModel inactive = Team1Members.FirstOrDefault(_ => _.Active == 1) ?? new() { Id = 0 };
                 inactive.Active = 0;
@@ -570,11 +557,13 @@ namespace FantasyFeudAdminConsole
                 _ = await _dataProcessor.ChangeActiveMemberAsync(inactive.Id, active.Id);
                 Debug.WriteLine($"{SelectedTeam2Member.Name} is now Active!");
             }
+
+            PostEvent();
         }
 
-        private void ReorderTeamMember(string teamNumber)
+        private void ReorderTeamMember(int? teamNumber)
         {
-            if (teamNumber == "1")
+            if (teamNumber == 1)
             {
                 var selectedIndex = Team1Members.IndexOf(SelectedTeam1Member);
                 Team1Members.Move(selectedIndex, selectedIndex == 0 ? Team1Members.Count - 1 : selectedIndex - 1);
@@ -584,12 +573,14 @@ namespace FantasyFeudAdminConsole
                 var selectedIndex = Team2Members.IndexOf(SelectedTeam2Member);
                 Team2Members.Move(selectedIndex, selectedIndex == 0 ? Team2Members.Count - 1 : selectedIndex - 1);
             }
+
+            PostEvent();
         }
 
-        private async void AwardTeam(string teamNumber)
+        private async void AwardTeam(int? teamNumber)
         {
             var points = AnswersData.Where(_ => _.Visible == 1).Sum(_ => _.Value);
-            if (teamNumber == "1")
+            if (teamNumber == 1)
             {
                 GameData.Team1Score += points;
                 Team1Score = GameData.Team1Score;
@@ -600,7 +591,7 @@ namespace FantasyFeudAdminConsole
                 Team2Score = GameData.Team2Score;
             }
 
-            _ = await _dataProcessor.AwardPointsAsync(GameData.Id, Convert.ToInt32(teamNumber), teamNumber == "1" ? GameData.Team1Score : GameData.Team2Score);
+            _ = await _dataProcessor.AwardPointsAsync(GameData.Id, teamNumber ?? 0, teamNumber == 1 ? GameData.Team1Score : GameData.Team2Score);
         }
 
         private void SetConsole()
@@ -757,36 +748,34 @@ namespace FantasyFeudAdminConsole
             }
         }
 
-        private async void ShowAnswer(string index)
+        private async void ShowAnswer(int? index)
         {
-            var answerIndex = Convert.ToInt16(index);
-
-            AnswersDataModel model = AnswersData.FirstOrDefault(_ => _.Id == answerIndex);
+            AnswersDataModel model = AnswersData.FirstOrDefault(_ => _.Id == index);
             model.Visible = model.Visible == 1 ? 0 : 1;
             switch (index)
             {
-                case "0":
+                case 0:
                     Answer0Visible = model.Visible;
                     break;
-                case "1":
+                case 1:
                     Answer1Visible = model.Visible;
                     break;
-                case "2":
+                case 2:
                     Answer2Visible = model.Visible;
                     break;
-                case "3":
+                case 3:
                     Answer3Visible = model.Visible;
                     break;
-                case "4":
+                case 4:
                     Answer4Visible = model.Visible;
                     break;
-                case "5":
+                case 5:
                     Answer5Visible = model.Visible;
                     break;
-                case "6":
+                case 6:
                     Answer6Visible = model.Visible;
                     break;
-                case "7":
+                case 7:
                     Answer7Visible = model.Visible;
                     break;
                 default:
