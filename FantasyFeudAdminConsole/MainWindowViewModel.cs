@@ -750,7 +750,7 @@ namespace FantasyFeudAdminConsole
 
         private async void ShowAnswer(int? index)
         {
-            AnswersDataModel model = AnswersData.FirstOrDefault(_ => _.Id == index);
+            AnswersDataModel model = AnswersData.FirstOrDefault(_ => _.Rank == index + 1);
             model.Visible = model.Visible == 1 ? 0 : 1;
             switch (index)
             {
