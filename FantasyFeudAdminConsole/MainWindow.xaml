@@ -10,7 +10,9 @@
     Title="{Binding Title}"
     Dialog:DialogParticipation.Register="{Binding}"
     prism:ViewModelLocator.AutoWireViewModel="True"
-    WindowStartupLocation="CenterScreen">
+    WindowStartupLocation="CenterScreen"
+                 Width="760" Height="375"
+                 >
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10" />
