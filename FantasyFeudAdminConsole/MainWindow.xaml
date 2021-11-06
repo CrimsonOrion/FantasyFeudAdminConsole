@@ -104,6 +104,15 @@
             Content="Next Question"
             IsEnabled="{Binding NextQuestionIsEnabled}" />
 
+        <Button x:Name="PreviousQuestionButton"
+            Grid.Row="1"
+            Grid.Column="6"
+            Margin="5"
+            VerticalAlignment="Center"
+            Command="{Binding PreviousQuestionCommand}"
+            Content="Prev. Question"
+            IsEnabled="{Binding PreviousQuestionIsEnabled}" />
+
         <Button x:Name="GetDataButton"
             Grid.Row="1"
             Grid.Column="7"

@@ -103,7 +103,7 @@ namespace FantasyFeudAdminConsole.Core.Processors
 
         public async Task<GamesDataModel> GetGameDataAsync(int gameId)
         {
-            await CreateDatabase();
+            //await CreateDatabase();
 
             var query = "" +
                 "SELECT Id, Team1Id, Team1Score, Team2Id, Team2Score " +

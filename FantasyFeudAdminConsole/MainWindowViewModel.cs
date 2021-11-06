@@ -377,6 +377,13 @@ namespace FantasyFeudAdminConsole
             set => SetProperty(ref _nextQuestionIsEnabled, value);
         }
 
+        private bool _previousQuestionIsEnabled;
+        public bool PreviousQuestionIsEnabled
+        {
+            get => _previousQuestionIsEnabled;
+            set => SetProperty(ref _previousQuestionIsEnabled, value);
+        }
+
         private bool _strikeIsEnabled;
         public bool StrikeIsEnabled
         {
@@ -406,6 +413,7 @@ namespace FantasyFeudAdminConsole
 
         public DelegateCommand AddStrikeCommand => new(AddStrike);
         public DelegateCommand NextQuestionCommand => new(NextQuestion);
+        public DelegateCommand PreviousQuestionCommand => new(PreviousQuestion);
         public DelegateCommand GetDataCommand => new(GetData);
         public DelegateCommand ProcessChangesCommand => new(ProcessChanges);
         public DelegateCommand<int?> ShowAnswerCommand => new(ShowAnswer);
@@ -453,10 +461,20 @@ namespace FantasyFeudAdminConsole
                 SetConsole();
             }
 
-            if (QuestionDataList.FirstOrDefault(_ => _.Id == QuestionData.Id + 1) is null)
+            EnableDisableButtons();
+        }
+
+        private async void PreviousQuestion()
+        {
+            QuestionsDataModel question = QuestionDataList.FirstOrDefault(_ => _.Id == QuestionData.Id - 1);
+            if (question is not null)
             {
-                NextQuestionIsEnabled = false;
+                QuestionData = question;
+                AnswersData = new(await _dataProcessor.GetAnswersDataAsync(question.Id));
+                SetConsole();
             }
+
+            EnableDisableButtons();
         }
 
         private async void GetData()
@@ -783,6 +801,12 @@ namespace FantasyFeudAdminConsole
             }
 
             _ = await _dataProcessor.ShowAnswerAsync(model);
+        }
+
+        private void EnableDisableButtons()
+        {
+            NextQuestionIsEnabled = QuestionDataList.FirstOrDefault(_ => _.Id == QuestionData.Id + 1) is not null;
+            PreviousQuestionIsEnabled = QuestionDataList.FirstOrDefault(_ => _.Id == QuestionData.Id - 1) is not null;
         }
 
         #endregion
