@@ -1,7 +1,6 @@
-﻿namespace FantasyFeudAdminConsole.Core.DataAccess
+﻿namespace FantasyFeudAdminConsole.Core.DataAccess;
+
+public interface IDbDataAccessConnection
 {
-    public interface IDbDataAccessConnection
-    {
-        bool TestConnection();
-    }
+    bool TestConnection();
 }

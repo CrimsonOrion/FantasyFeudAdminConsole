@@ -14,59 +14,56 @@ using Prism.Modularity;
 using System;
 using System.Windows;
 
-namespace FantasyFeudAdminConsole
+namespace FantasyFeudAdminConsole;
+
+/// <summary>
+/// Interaction logic for App.xaml
+/// </summary>
+public partial class App
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App
+    protected override void OnStartup(StartupEventArgs e)
     {
-        protected override void OnStartup(StartupEventArgs e)
+        base.OnStartup(e);
+        ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncAll;
+        ThemeManager.Current.SyncTheme();
+    }
+
+    protected override Window CreateShell() => Container.Resolve<MainWindow>();
+    protected override void RegisterTypes(IContainerRegistry containerRegistry)
+    {
+        IConfigurationRoot configuration = new ConfigurationBuilder()
+            .AddJsonFile("appSettings.json", false, true)
+            .Build()
+            ?? throw new Exception("appsettings.json not found");
+
+        GlobalConfig.DatabaseSettings = new()
         {
-            base.OnStartup(e);
-            ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncAll;
-            ThemeManager.Current.SyncTheme();
-        }
+            DataSource = configuration.GetSection("Database Settings").GetSection("Data Source").Value,
+            PersistSecurityInfo = bool.TryParse(configuration.GetSection("Database Settings").GetSection("Persist Security Info").Value, out var b) && b
+        };
 
-        protected override Window CreateShell() => Container.Resolve<MainWindow>();
-        protected override void RegisterTypes(IContainerRegistry containerRegistry)
+        GlobalConfig.WebServerSettings = new()
         {
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .AddJsonFile("appSettings.json", false, true)
-                .Build();
+            EventServer = new Uri(configuration.GetSection("Web Server Settings").GetSection("Event Server").Value!),
+            EventServerTest = new Uri(configuration.GetSection("Web Server Settings").GetSection("Event Server Test").Value!)
+        };
 
-            GlobalConfig.DatabaseSettings = new()
-            {
-                DataSource = configuration.GetSection("Database Settings").GetSection("Data Source").Value,
-                InitialCatalog = configuration.GetSection("Database Settings").GetSection("Initial Catalog").Value,
-                UserId = configuration.GetSection("Database Settings").GetSection("User ID").Value,
-                Password = configuration.GetSection("Database Settings").GetSection("Password").Value,
-                PersistSecurityInfo = bool.TryParse(configuration.GetSection("Database Settings").GetSection("Persist Security Info").Value, out var b) && b
-            };
+        SQLiteConnectionString.SetConnectionString(GlobalConfig.DatabaseSettings.DataSource
+            ?? throw new("Datasource not found"));
 
-            GlobalConfig.WebServerSettings = new()
-            {
-                EventServer = new Uri(configuration.GetSection("Web Server Settings").GetSection("Event Server").Value),
-                EventServerTest = new Uri(configuration.GetSection("Web Server Settings").GetSection("Event Server Test").Value)
-            };
+        _ = containerRegistry
 
-            MsSqlConnectionString.SetConnectionString(GlobalConfig.DatabaseSettings.DataSource, GlobalConfig.DatabaseSettings.InitialCatalog, GlobalConfig.DatabaseSettings.UserId, GlobalConfig.DatabaseSettings.Password, GlobalConfig.DatabaseSettings.PersistSecurityInfo);
-            SQLiteConnectionString.SetConnectionString(GlobalConfig.DatabaseSettings.DataSource);
+            .RegisterInstance<IDialogCoordinator>(new DialogCoordinator())
 
-            _ = containerRegistry
+            .RegisterScoped<IDataAccess, SQLiteDataAccess>()
+            .RegisterScoped<IDataProcessor, DataProcessorSQLite>()
+            .RegisterScoped<IWebProcessor, WebProcessor>()
+            ;
+    }
 
-                .RegisterInstance<IDialogCoordinator>(new DialogCoordinator())
-
-                .RegisterScoped<IDataAccess, SQLiteDataAccess>()
-                .RegisterScoped<IDataProcessor, DataProcessorSQLite>()
-                .RegisterScoped<IWebProcessor, WebProcessor>()
-                ;
-        }
-
-        protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
-        {
-            //_ = moduleCatalog
-            //    .AddModule<Module>()
-        }
+    protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
+    {
+        //_ = moduleCatalog
+        //    .AddModule<Module>()
     }
 }

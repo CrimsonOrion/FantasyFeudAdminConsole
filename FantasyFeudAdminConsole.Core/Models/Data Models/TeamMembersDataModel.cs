@@ -1,10 +1,9 @@
-﻿namespace FantasyFeudAdminConsole.Core.Models
+﻿namespace FantasyFeudAdminConsole.Core.Models;
+
+public class TeamMembersDataModel
 {
-    public class TeamMembersDataModel
-    {
-        public int Id { get; set; }
-        public int TeamId { get; set; }
-        public string Name { get; set; }
-        public int Active { get; set; }
-    }
+    public int Id { get; set; }
+    public int TeamId { get; set; }
+    public string? Name { get; set; }
+    public int Active { get; set; }
 }

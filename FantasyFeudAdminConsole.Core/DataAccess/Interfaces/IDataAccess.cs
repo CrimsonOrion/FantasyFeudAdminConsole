@@ -1,6 +1,5 @@
-﻿namespace FantasyFeudAdminConsole.Core.DataAccess
+﻿namespace FantasyFeudAdminConsole.Core.DataAccess;
+
+public interface IDataAccess : IDataAccessAsync, IDbDataAccessConnection
 {
-    public interface IDataAccess : IDataAccessAsync, IDbDataAccessConnection
-    {
-    }
 }
