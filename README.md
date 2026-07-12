@@ -1,4 +1,7 @@
 # Fantasy Feud Admin Console
+
+# AS OF 2026/06/12, this project is archived.<br>It is no longer how we interact with Fantasy Feud.
+
 Admin Console to push data to FantasyFeudServer
 
 You will need to add an appSettings.json file. You can use this template:
